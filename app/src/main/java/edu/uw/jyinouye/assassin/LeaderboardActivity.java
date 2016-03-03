@@ -19,9 +19,5 @@ public class LeaderboardActivity extends AppCompatActivity {
 
         ListView leaderList = (ListView)findViewById(R.id.leaderboard_listview);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.leaderboard_list_item, leaders);
-
-        leaderList.setAdapter(adapter);
     }
 }
