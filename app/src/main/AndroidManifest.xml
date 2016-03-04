@@ -16,8 +16,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:allowBackup="true"
         android:name=".Assassin"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -42,19 +42,25 @@
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".LeaderboardActivity"
-            android:label="@string/title_activity_leaderboard"/>
+        <activity
+            android:name=".LeaderboardActivity"
+            android:label="@string/title_activity_leaderboard" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login">
             <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfileActivity"
-            android:label="@string/title_activity_profile"/>
-        <activity android:name=".ShopActivity"></activity>
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/title_activity_profile" />
+        <activity android:name=".ShopActivity" />
+        <activity
+            android:name=".JoinGroupActivity"
+            android:label="@string/title_activity_join_group"></activity>
     </application>
 
 </manifest>

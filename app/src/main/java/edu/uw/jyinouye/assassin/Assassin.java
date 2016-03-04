@@ -18,8 +18,8 @@ public class Assassin extends Application {
     private static final String TAG = "Assassin";
     private static Assassin singleton;
 
-    Firebase ref;
-    Firebase.AuthResultHandler authResultHandler;
+    private Firebase ref;
+    private Firebase.AuthResultHandler authResultHandler;
 
     @Override
     public void onCreate() {
@@ -61,8 +61,6 @@ public class Assassin extends Application {
                 Log.v(TAG, firebaseError.toString());
             }
         });
-
-        login(email, password);
     }
 
     public void login(String email, String password) {
@@ -70,6 +68,7 @@ public class Assassin extends Application {
     }
 
     public void joinGroup(String groupName, String groupPassword) {
-        ref.child("groups").setValue(groupName);
+
+        ref.child("groups").push().setValue(groupName);
     }
 }
