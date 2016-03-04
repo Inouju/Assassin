@@ -54,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_user_password"
-                    android:inputType="textEmailAddress"
+                    android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true" />
 
@@ -72,7 +72,7 @@
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/prompt_group_name"
                     android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
+                    android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true" />
 
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/password_confirm"
+                    android:id="@+id/group_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"

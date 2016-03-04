@@ -65,6 +65,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private EditText mGroupNameView;
+    private EditText mGroupPasswordView;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -78,7 +80,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.user_password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mGroupNameView = (EditText) findViewById(R.id.group_name);
+        mGroupPasswordView = (EditText) findViewById(R.id.group_password);
+        mGroupPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
@@ -162,6 +166,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String groupName = mGroupNameView.getText().toString();
+        String groupPassword = mGroupPasswordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -192,7 +198,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(email, password, groupName, groupPassword);
             mAuthTask.execute((Void) null);
         }
     }
@@ -309,10 +315,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private final String mGroupName;
+        private final String mGroupPassword;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, String groupName, String groupPassword) {
             mEmail = email;
             mPassword = password;
+            mGroupName = groupName;
+            mGroupPassword = groupPassword;
         }
 
         @Override
@@ -326,11 +336,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             }
 
-            // send login credentials to firebase
             Assassin assassin = ((Assassin)getApplicationContext()).getInstance();
+            // send login credentials to firebase
             assassin.signup(mEmail, mPassword);
+
+            // join group
+            assassin.joinGroup(mGroupName, mGroupPassword);
             // returns true, allowing login, since user registered
             return true;
+
         }
 
         @Override

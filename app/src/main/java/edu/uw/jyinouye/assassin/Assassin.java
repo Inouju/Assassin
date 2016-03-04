@@ -68,4 +68,8 @@ public class Assassin extends Application {
     public void login(String email, String password) {
         ref.authWithPassword(email, password, authResultHandler);
     }
+
+    public void joinGroup(String groupName, String groupPassword) {
+        ref.child("groups").setValue(groupName);
+    }
 }
