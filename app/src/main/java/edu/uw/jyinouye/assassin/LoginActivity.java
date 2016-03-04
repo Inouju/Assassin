@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = (EditText) findViewById(R.id.user_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -328,7 +328,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             // send login credentials to firebase
             Assassin assassin = ((Assassin)getApplicationContext()).getInstance();
-            assassin.login(mEmail, mPassword);
+            assassin.signup(mEmail, mPassword);
             // returns true, allowing login, since user registered
             return true;
         }
