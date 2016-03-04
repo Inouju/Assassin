@@ -17,6 +17,7 @@ public class Assassin extends Application {
 
     private static final String TAG = "Assassin";
     private static Assassin singleton;
+    String id;
 
     private Firebase ref;
     private Firebase.AuthResultHandler authResultHandler;
@@ -53,6 +54,7 @@ public class Assassin extends Application {
         ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
+                id = (String) result.get("uid");
                 Log.v(TAG, "Successfully created user account with uid: " + result.get("uid"));
             }
             @Override
@@ -70,5 +72,10 @@ public class Assassin extends Application {
     public void joinGroup(String groupName, String groupPassword) {
 
         ref.child("groups").push().setValue(groupName);
+    }
+
+    public void getUserInfo(){
+        //
+        
     }
 }
