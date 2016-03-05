@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,6 +46,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    private static final String TAG = "LoginActivity";
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -109,14 +111,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private void toggleSignUp() {
         Button mSignUpButton = (Button) findViewById(R.id.toggle_sign_up);
+        Button mSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         EditText mConfirmUserPass = (EditText) findViewById(R.id.confirm_user_password);
         // if user is viewing sign in form
         if(toggleSignUp) {
             mSignUpButton.setText(R.string.toggle_sign_in);
+            mSignInButton.setText(R.string.action_sign_in);
             mConfirmUserPass.setVisibility(View.GONE);
             toggleSignUp = false;
         } else {
             mSignUpButton.setText(R.string.toggle_sign_up);
+            mSignInButton.setText(R.string.action_sign_up);
             mConfirmUserPass.setVisibility(View.VISIBLE);
             toggleSignUp = true;
         }
@@ -329,36 +334,40 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-    private void startJoinGroupActivity() {
-        startActivity(new Intent(this, JoinGroupActivity.class));
+    private void startJoinGroupActivity(String uid) {
+        Intent intent = new Intent(this, JoinGroupActivity.class);
+        intent.putExtra("uid", uid);
+        startActivity(intent);
     }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> implements Assassin.OnAuthenticateListener {
 
         private final String mEmail;
         private final String mPassword;
+        private final Assassin assassin;
+        private boolean success;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
+            assassin = ((Assassin)getApplicationContext()).getInstance();
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            // set listener for authentication callbacks
+            assassin.setOnAuthenticateListener(this);
 
-            Assassin assassin = ((Assassin)getApplicationContext()).getInstance();
             // sign up user
             if(toggleSignUp) {
                 assassin.signup(mEmail, mPassword);
+            } else {
+                assassin.login(mEmail, mPassword);
             }
-
-            assassin.login(mEmail, mPassword);
-
-            //TODO: check that user account exists
 
             // returns true, allowing login, since user registered
             return true;
@@ -369,19 +378,33 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-
-            if (success) {
-                startJoinGroupActivity();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
         }
 
         @Override
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+
+        @Override
+        public void onSignUpSuccess(String uid) {
+            assassin.login(mEmail, mPassword);
+        }
+
+        @Override
+        public void onSignUpError(FirebaseError error) {
+            mEmailView.setError(error.toString());
+        }
+
+        @Override
+        public void onLoginSuccess(String uid) {
+            Log.v(TAG, "Successfully logged in");
+            startJoinGroupActivity(uid);
+        }
+
+        @Override
+        public void onLoginError(FirebaseError error) {
+            mEmailView.setError(error.toString());
         }
     }
 }

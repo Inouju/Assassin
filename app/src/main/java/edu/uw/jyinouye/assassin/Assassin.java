@@ -21,6 +21,7 @@ public class Assassin extends Application {
 
     private Firebase ref;
     private Firebase.AuthResultHandler authResultHandler;
+    private OnAuthenticateListener mAuthenticateListener;
 
     @Override
     public void onCreate() {
@@ -37,11 +38,13 @@ public class Assassin extends Application {
             public void onAuthenticated(AuthData authData) {
                 // Authenticated successfully with payload authData
                 Log.v(TAG, "Authenticated");
+                mAuthenticateListener.onLoginSuccess(authData.getUid());
             }
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
                 // Authenticated failed with error firebaseError
                 Log.v(TAG, firebaseError.toString());
+                mAuthenticateListener.onLoginError(firebaseError);
             }
         };
     }
@@ -50,17 +53,19 @@ public class Assassin extends Application {
         return this.singleton;
     }
 
-    public void signup(String email, String password) {
+    public void signup(final String email, final String password) {
         ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
                 id = (String) result.get("uid");
-                Log.v(TAG, "Successfully created user account with uid: " + result.get("uid"));
+                Log.v(TAG, "Successfully created user account with uid: " + id);
+                mAuthenticateListener.onSignUpSuccess(id);
             }
             @Override
             public void onError(FirebaseError firebaseError) {
                 // there was an error
                 Log.v(TAG, firebaseError.toString());
+                mAuthenticateListener.onSignUpError(firebaseError);
             }
         });
     }
@@ -77,5 +82,20 @@ public class Assassin extends Application {
     public void getUserInfo(){
         //
         
+    }
+
+    public void setOnAuthenticateListener(OnAuthenticateListener mListener) {
+        mAuthenticateListener = mListener;
+    }
+
+    public interface OnAuthenticateListener {
+        void onSignUpSuccess(String uid);
+
+        void onSignUpError(FirebaseError error);
+
+        void onLoginSuccess(String uid);
+
+        void onLoginError(FirebaseError error);
+
     }
 }
