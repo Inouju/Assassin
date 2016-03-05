@@ -12,21 +12,32 @@ import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class JoinGroupActivity extends AppCompatActivity {
+public class JoinGroupActivity extends AppCompatActivity implements ValueEventListener {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -39,21 +50,29 @@ public class JoinGroupActivity extends AppCompatActivity {
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private EditText mGroupView;
+    private AutoCompleteTextView mGroupView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    // application class for performing firebase operations
+    private Assassin assassin;
+    private List<String> groupNames;
+    private ArrayAdapter<String> groupAutoCompleteAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_group);
 
+        assassin = ((Assassin)getApplicationContext()).getInstance();
+        groupNames = new ArrayList<>();
+
         Bundle extras = getIntent().getExtras();
         ((TextView) findViewById(R.id.user_name)).setText(extras.getString("uid"));
 
         // Set up the login form.
-        mGroupView = (EditText) findViewById(R.id.group_name);
+        mGroupView = (AutoCompleteTextView) findViewById(R.id.group_name);
         mPasswordView = (EditText) findViewById(R.id.group_password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -65,6 +84,8 @@ public class JoinGroupActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        addGroupsToAutoComplete();
 
         Button mEmailSignInButton = (Button) findViewById(R.id.join_group);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -146,6 +167,14 @@ public class JoinGroupActivity extends AppCompatActivity {
         return password.length() > 4;
     }
 
+    private void addGroupsToAutoComplete() {
+        assassin.setGroupListener(this);
+        groupAutoCompleteAdapter =
+                new ArrayAdapter<String>(JoinGroupActivity.this,
+                        android.R.layout.simple_dropdown_item_1line, groupNames);
+        mGroupView.setAdapter(groupAutoCompleteAdapter);
+    }
+
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -182,6 +211,21 @@ public class JoinGroupActivity extends AppCompatActivity {
         }
     }
 
+    // Callbacks for handling responses from firebase
+    @Override
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        groupNames.clear();
+        for(DataSnapshot group: dataSnapshot.getChildren()) {
+            groupNames.add(group.getValue().toString());
+        }
+        groupAutoCompleteAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onCancelled(FirebaseError firebaseError) {
+
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -198,8 +242,6 @@ public class JoinGroupActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-            Assassin assassin = ((Assassin)getApplicationContext()).getInstance();
             // join group
             assassin.joinGroup(mGroupName, mGroupPassword);
             return true;

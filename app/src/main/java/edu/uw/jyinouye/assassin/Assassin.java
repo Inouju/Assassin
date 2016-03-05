@@ -4,10 +4,13 @@ import android.app.Application;
 import android.util.Log;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -86,6 +89,10 @@ public class Assassin extends Application {
 
     public void setOnAuthenticateListener(OnAuthenticateListener mListener) {
         mAuthenticateListener = mListener;
+    }
+
+    public void setGroupListener(ValueEventListener mListener) {
+        ref.child("groups").addValueEventListener(mListener);
     }
 
     public interface OnAuthenticateListener {
