@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+<group android:checkableBehavior="single">
+    <item
+        android:id="@+id/nav_map_fragment"
+        android:icon="@android:drawable/ic_delete"
+        android:title="@string/nav_map_fragment"
+        android:checked="true" />
+    <item
+        android:id="@+id/nav_chat_fragment"
+        android:icon="@android:drawable/ic_delete"
+        android:title="@string/nav_chat_fragment" />
+    <item
+        android:id="@+id/nav_leaderboard_fragment"
+        android:icon="@android:drawable/ic_delete"
+        android:title="@string/nav_leaderboard_fragment" />
+    <item
+        android:id="@+id/nav_shop_fragment"
+        android:icon="@android:drawable/ic_delete"
+        android:title="@string/nav_shop_fragment" />
+    <item
+        android:id="@+id/nav_profile_fragment"
+        android:icon="@android:drawable/ic_delete"
+        android:title="@string/nav_profile_fragment" />
+</group>
+</menu>

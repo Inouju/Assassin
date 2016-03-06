@@ -3,10 +3,17 @@ package edu.uw.jyinouye.assassin;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -25,6 +32,10 @@ import com.google.android.gms.maps.model.LatLng;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    private Toolbar toolbar;
+    private DrawerLayout mDrawer;
+    private NavigationView nvDrawer;
+
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -35,6 +46,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        // Set a Toolbar to replace the ActionBar.
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Find our drawer view
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        // Find our drawer view
+        nvDrawer = (NavigationView) findViewById(R.id.nvView);
+        // Setup drawer view
+        setupDrawerContent(nvDrawer);
 
         // Poll for location every 10 seconds, max 5 seconds
         mLocationRequest = new LocationRequest();
@@ -58,6 +81,78 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.setRetainInstance(true);
     }
 
+    /**
+     * All code relating to drawer layout implementaion came from
+     * https://guides.codepath.com/android/Fragment-Navigation-Drawer
+     */
+
+    // `onPostCreate` called when activity start-up is complete after `onStart()`
+    // NOTE! Make sure to override the method with only a single `Bundle` argument
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // The action bar home/up action should open or close the drawer.
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawer.openDrawer(GravityCompat.START);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setupDrawerContent(NavigationView navigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        selectDrawerItem(menuItem);
+                        return true;
+                    }
+                });
+    }
+
+    public void selectDrawerItem(MenuItem menuItem) {
+        // Create a new fragment and specify the planet to show based on
+        // position
+        Fragment fragment = null;
+
+//        Class fragmentClass;
+//        switch(menuItem.getItemId()) {
+//            case R.id.nav_first_fragment:
+//                fragmentClass = MapFragment.class;
+//                break;
+//            case R.id.nav_second_fragment:
+//                fragmentClass = ChatFragment.class;
+//                break;
+//            case R.id.nav_third_fragment:
+//                fragmentClass = LeaderBoardFragment.class;
+//                break;
+//            default:
+//                fragmentClass = ProfileFragment.class;
+//        }
+
+//        try {
+//            fragment = (Fragment) fragmentClass.newInstance();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        // Insert the fragment by replacing any existing fragment
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+//
+//        // Highlight the selected item, update the title, and close the drawer
+//        // Highlight the selected item has been done by NavigationView
+//        // menuItem.setChecked(true);
+//        setTitle(menuItem.getTitle());
+//        mDrawer.closeDrawers();
+    }
 
     /**
      * Manipulates the map once available.

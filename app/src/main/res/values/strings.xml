@@ -6,6 +6,13 @@
     <string name="title_activity_leaderboard">Leaderboard</string>
     <string name="title_activity_profile">Profile</string>
 
+    <!--Navigation names-->
+    <string name="nav_map_fragment">Map</string>
+    <string name="nav_chat_fragment">Chat</string>
+    <string name="nav_leaderboard_fragment">Leaderboard</string>
+    <string name="nav_shop_fragment">Shop</string>
+    <string name="nav_profile_fragment">Profile</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_user_password">User Password</string>

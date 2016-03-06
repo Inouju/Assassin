@@ -45,8 +45,8 @@ public class Assassin extends Application implements ValueEventListener {
             @Override
             public void onAuthenticated(AuthData authData) {
                 // Authenticated successfully with payload authData
-                Log.v(TAG, "Authenticated");
-                mAuthenticateListener.onLoginSuccess(authData.getUid());
+                uid = authData.getUid();
+                mAuthenticateListener.onLoginSuccess(uid);
             }
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
@@ -65,7 +65,6 @@ public class Assassin extends Application implements ValueEventListener {
         ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
-                uid = (String) result.get("uid");
                 Log.v(TAG, "Successfully created user account with uid: " + uid);
                 mAuthenticateListener.onSignUpSuccess(uid);
             }
@@ -132,8 +131,7 @@ public class Assassin extends Application implements ValueEventListener {
             // reference to list of players for current group
             Firebase players = ref.child("groups").child(dataSnapshot.getKey()).child("players");
             Map<String, Object> player = new HashMap<>();
-            //TODO: replace "playerName" with unique identifier, uid seems to be too long, causes a crash
-            player.put("playerName", "test");
+            player.put(uid, "test");
             players.updateChildren(player);
             mJoinGroupListener.onJoinGroupSuccess();
         } else {
