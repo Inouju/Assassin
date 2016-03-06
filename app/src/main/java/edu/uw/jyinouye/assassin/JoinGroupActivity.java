@@ -12,7 +12,6 @@ import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -51,7 +50,9 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
 
     // UI references.
     private AutoCompleteTextView mGroupView;
+    private Button mJoinGroup;
     private EditText mPasswordView;
+    private EditText mPasswordConfimView;
     private View mProgressView;
     private View mLoginFormView;
 
@@ -59,6 +60,7 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
     private Assassin assassin;
     private List<String> groupNames;
     private ArrayAdapter<String> groupAutoCompleteAdapter;
+    private boolean toggleCreateGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +74,28 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         ((TextView) findViewById(R.id.user_name)).setText(extras.getString("uid"));
 
         // Set up the login form.
+        mJoinGroup = (Button) findViewById(R.id.join_group);
         mGroupView = (AutoCompleteTextView) findViewById(R.id.group_name);
+        mGroupView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            // if group doesn't exist, change input fields to create new group
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    EditText mGroupConfirmPassword = (EditText) findViewById(R.id.group_password_confirm);
+                    if(!groupNames.contains(mGroupView.getText().toString())) {
+                        mJoinGroup.setText(R.string.action_create_group);
+                        mGroupConfirmPassword.setVisibility(View.VISIBLE);
+                        toggleCreateGroup = true;
+                    } else {
+                        mJoinGroup.setText(R.string.action_join_group);
+                        mGroupConfirmPassword.setVisibility(View.GONE);
+                        toggleCreateGroup = false;
+                    }
+                }
+            }
+        });
+
         mPasswordView = (EditText) findViewById(R.id.group_password);
+        mPasswordConfimView = (EditText) findViewById(R.id.group_password_confirm);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -99,28 +121,6 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         mProgressView = findViewById(R.id.login_progress);
     }
 
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mGroupView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
@@ -138,6 +138,7 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         // Store values at the time of the login attempt.
         String email = mGroupView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String passwordConfirm = mPasswordConfimView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -146,6 +147,12 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
+            cancel = true;
+        }
+
+        if(toggleCreateGroup && !password.equals(passwordConfirm)) {
+            mPasswordConfimView.setError(getString(R.string.error_password_mismatch));
+            focusView = mPasswordConfimView;
             cancel = true;
         }
 
@@ -216,7 +223,7 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
     public void onDataChange(DataSnapshot dataSnapshot) {
         groupNames.clear();
         for(DataSnapshot group: dataSnapshot.getChildren()) {
-            groupNames.add(group.getValue().toString());
+            groupNames.add(group.getKey().toString());
         }
         groupAutoCompleteAdapter.notifyDataSetChanged();
     }
@@ -230,7 +237,7 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> implements Assassin.OnJoinGroupListener {
 
         private final String mGroupName;
         private final String mGroupPassword;
@@ -242,7 +249,11 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
 
         @Override
         protected Boolean doInBackground(Void... params) {
+            assassin.setOnJoinGroupListener(this);
             // join group
+            if(toggleCreateGroup) {
+                assassin.createGroup(mGroupName, mGroupPassword);
+            }
             assassin.joinGroup(mGroupName, mGroupPassword);
             return true;
         }
@@ -250,14 +261,6 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                startMapsActivity();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
         }
 
         private void startMapsActivity() {
@@ -268,6 +271,19 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+
+        @Override
+        public void onJoinGroupSuccess() {
+            showProgress(false);
+            startMapsActivity();
+        }
+
+        @Override
+        public void onJoinGroupError(String error) {
+            showProgress(false);
+            mPasswordView.setError(error);
+            mPasswordView.requestFocus();
         }
     }
 }

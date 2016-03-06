@@ -383,7 +383,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            showProgress(false);
         }
 
         @Override
@@ -398,12 +397,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         public void onLoginSuccess(String uid) {
+            showProgress(false);
             Log.v(TAG, "Successfully logged in");
             startJoinGroupActivity(uid);
         }
 
         @Override
         public void onLoginError(FirebaseError error) {
+            showProgress(false);
+            mEmailView.requestFocus();
             mEmailView.setError(error.toString());
         }
     }

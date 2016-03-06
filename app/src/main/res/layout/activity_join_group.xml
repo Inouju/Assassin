@@ -63,9 +63,9 @@
                     android:id="@+id/group_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
+                    android:hint="@string/prompt_group_password"
                     android:imeActionId="@+id/login"
-                    android:imeActionLabel="@string/prompt_password"
+                    android:imeActionLabel="@string/prompt_group_password"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
@@ -73,13 +73,33 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/group_password_confirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_group_password"
+                    android:imeActionId="@+id/login"
+                    android:imeActionLabel="@string/prompt_group_password_confirm"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:visibility="gone"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+
             <Button
                 android:id="@+id/join_group"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/action_join"
+                android:text="@string/action_join_group"
                 android:textStyle="bold" />
 
         </LinearLayout>
