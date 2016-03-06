@@ -39,13 +39,6 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".ChatActivity"
-            android:label="@string/title_activity_chat"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".LeaderboardActivity"
-            android:label="@string/title_activity_leaderboard" />
-        <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login">
             <intent-filter android:label="@string/app_name">
@@ -54,10 +47,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ProfileActivity"
-            android:label="@string/title_activity_profile" />
-        <activity android:name=".ShopActivity" />
         <activity
             android:name=".JoinGroupActivity"
             android:label="@string/title_activity_join_group"></activity>

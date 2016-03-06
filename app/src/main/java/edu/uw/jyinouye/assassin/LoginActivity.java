@@ -115,12 +115,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         EditText mConfirmUserPass = (EditText) findViewById(R.id.confirm_user_password);
         // if user is viewing sign in form
         if(toggleSignUp) {
-            mSignUpButton.setText(R.string.toggle_sign_in);
+            mSignUpButton.setText(R.string.toggle_sign_up);
             mSignInButton.setText(R.string.action_sign_in);
             mConfirmUserPass.setVisibility(View.GONE);
             toggleSignUp = false;
         } else {
-            mSignUpButton.setText(R.string.toggle_sign_up);
+            mSignUpButton.setText(R.string.toggle_sign_in);
             mSignInButton.setText(R.string.action_sign_up);
             mConfirmUserPass.setVisibility(View.VISIBLE);
             toggleSignUp = true;

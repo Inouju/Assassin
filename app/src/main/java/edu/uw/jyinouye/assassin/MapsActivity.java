@@ -29,6 +29,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 
+import edu.uw.jyinouye.assassin.fragments.MapFragment;
+import edu.uw.jyinouye.assassin.fragments.ChatFragment;
+import edu.uw.jyinouye.assassin.fragments.LeaderboardFragment;
+import edu.uw.jyinouye.assassin.fragments.ProfileFragment;
+import edu.uw.jyinouye.assassin.fragments.ShopFragment;
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -74,11 +80,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .build();
         }
 
+        //TODO: fix call to .getMapAsyncTask crash
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        mapFragment.setRetainInstance(true);
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this);
+//        mapFragment.setRetainInstance(true);
     }
 
     /**
@@ -122,36 +129,43 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // position
         Fragment fragment = null;
 
-//        Class fragmentClass;
-//        switch(menuItem.getItemId()) {
-//            case R.id.nav_first_fragment:
-//                fragmentClass = MapFragment.class;
-//                break;
-//            case R.id.nav_second_fragment:
-//                fragmentClass = ChatFragment.class;
-//                break;
-//            case R.id.nav_third_fragment:
-//                fragmentClass = LeaderBoardFragment.class;
-//                break;
-//            default:
-//                fragmentClass = ProfileFragment.class;
-//        }
+        Class fragmentClass;
+        switch(menuItem.getItemId()) {
+            case R.id.nav_map_fragment:
+                fragmentClass = edu.uw.jyinouye.assassin.fragments.MapFragment.class;
+                break;
+            case R.id.nav_chat_fragment:
+                fragmentClass = ChatFragment.class;
+                break;
+            case R.id.nav_leaderboard_fragment:
+                fragmentClass = LeaderboardFragment.class;
+                break;
+            case R.id.nav_shop_fragment:
+                fragmentClass = ShopFragment.class;
+                break;
+            case R.id.nav_profile_fragment:
+                fragmentClass = ProfileFragment.class;
+                break;
+            default:
+                fragmentClass = MapFragment.class;
+                break;
+        }
 
-//        try {
-//            fragment = (Fragment) fragmentClass.newInstance();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        // Insert the fragment by replacing any existing fragment
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-//
-//        // Highlight the selected item, update the title, and close the drawer
-//        // Highlight the selected item has been done by NavigationView
-//        // menuItem.setChecked(true);
-//        setTitle(menuItem.getTitle());
-//        mDrawer.closeDrawers();
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
+        // Highlight the selected item, update the title, and close the drawer
+        // Highlight the selected item has been done by NavigationView
+        // menuItem.setChecked(true);
+        setTitle(menuItem.getTitle());
+        mDrawer.closeDrawers();
     }
 
     /**
