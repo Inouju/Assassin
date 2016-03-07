@@ -5,6 +5,7 @@
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_leaderboard">Leaderboard</string>
     <string name="title_activity_profile">Profile</string>
+    <string name="title_activty_join_group">Join a group</string>
 
     <!--Navigation names-->
     <string name="nav_map_fragment">Map</string>
@@ -26,7 +27,8 @@
     <string name="action_sign_in">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_login">Incorrect email or password</string>
+    <string name="error_signup">Could not sign up</string>
     <string name="error_password_mismatch">Passwords do not match</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
