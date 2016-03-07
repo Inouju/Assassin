@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -42,6 +43,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView nvDrawer;
 
     private SupportMapFragment mMapFragment;
+    private ChatFragment mChatFragment;
+    private LeaderboardFragment mLeaderboardFragment;
+    private ProfileFragment mProfileFragment;
+    private ShopFragment mShopFragment;
+
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -80,11 +86,30 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .build();
         }
 
+        // create references to fragments to add later
+        mChatFragment = new ChatFragment();
+        mLeaderboardFragment = new LeaderboardFragment();
+        mProfileFragment = new ProfileFragment();
+        mShopFragment = new ShopFragment();
+
+        // create new mapfragment with callbacks to this activity
         mMapFragment = SupportMapFragment.newInstance();
         mMapFragment.getMapAsync(this);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, mMapFragment).commit();
 
+        // Setup initial state where all but mapfragment is hidden
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .add(R.id.flContent, mMapFragment)
+                .add(R.id.flContent, mChatFragment)
+                .add(R.id.flContent, mLeaderboardFragment)
+                .add(R.id.flContent, mProfileFragment)
+                .add(R.id.flContent, mShopFragment)
+                .hide(mChatFragment)
+                .hide(mLeaderboardFragment)
+                .hide(mProfileFragment)
+                .hide(mShopFragment)
+                .show(mMapFragment)
+                .commit();
     }
 
     /**
@@ -124,45 +149,56 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the planet to show based on
-        // position
-        Fragment fragment = null;
-        Class fragmentClass;
 
         FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
 
         switch(menuItem.getItemId()) {
             case R.id.nav_map_fragment:
-                fragmentManager.beginTransaction().replace(R.id.flContent, mMapFragment).commit();
-                mMapFragment.getMapAsync(this);
-                setTitle(menuItem.getTitle());
-                mDrawer.closeDrawers();
-                return;
+                ft.show(mMapFragment)
+                        .hide(mChatFragment)
+                        .hide(mLeaderboardFragment)
+                        .hide(mProfileFragment)
+                        .hide(mShopFragment);
+                break;
             case R.id.nav_chat_fragment:
-                fragmentClass = ChatFragment.class;
+                ft.show(mChatFragment)
+                        .hide(mMapFragment)
+                        .hide(mLeaderboardFragment)
+                        .hide(mProfileFragment)
+                        .hide(mShopFragment);
                 break;
             case R.id.nav_leaderboard_fragment:
-                fragmentClass = LeaderboardFragment.class;
+                ft.show(mLeaderboardFragment)
+                        .hide(mChatFragment)
+                        .hide(mMapFragment)
+                        .hide(mProfileFragment)
+                        .hide(mShopFragment);
                 break;
             case R.id.nav_shop_fragment:
-                fragmentClass = ShopFragment.class;
+                ft.show(mShopFragment)
+                        .hide(mChatFragment)
+                        .hide(mLeaderboardFragment)
+                        .hide(mProfileFragment)
+                        .hide(mMapFragment);
                 break;
             case R.id.nav_profile_fragment:
-                fragmentClass = ProfileFragment.class;
+                ft.show(mProfileFragment)
+                        .hide(mChatFragment)
+                        .hide(mLeaderboardFragment)
+                        .hide(mMapFragment)
+                        .hide(mShopFragment);
                 break;
             default:
-                fragmentClass = ChatFragment.class;
+                ft.show(mMapFragment)
+                        .hide(mChatFragment)
+                        .hide(mLeaderboardFragment)
+                        .hide(mProfileFragment)
+                        .hide(mShopFragment);
                 break;
         }
 
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Insert the fragment by replacing any existing fragment
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        ft.commit();
 
         // Highlight the selected item, update the title, and close the drawer
         // Highlight the selected item has been done by NavigationView
