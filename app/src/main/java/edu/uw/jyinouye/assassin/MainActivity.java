@@ -12,9 +12,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Toolbar toolbar;
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     private SupportMapFragment mMapFragment;
     private ChatFragment mChatFragment;
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Find our drawer view
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -70,6 +74,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
         // Setup drawer view
         setupDrawerContent(nvDrawer);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, R.string.nav_open, R.string.nav_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
+
+        mDrawer.addDrawerListener(mDrawerToggle);
 
         // Poll for location every 10 seconds, max 5 seconds
         mLocationRequest = new LocationRequest();
@@ -122,8 +142,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

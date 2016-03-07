@@ -15,17 +15,13 @@ import edu.uw.jyinouye.assassin.R;
  */
 public class ChatFragment extends Fragment {
 
-
     public ChatFragment() {
         // Required empty public constructor
     }
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
