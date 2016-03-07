@@ -4,8 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.AsyncTask;
@@ -14,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,8 +28,6 @@ import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -269,7 +264,7 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         }
 
         private void startMapsActivity() {
-            startActivity(new Intent(JoinGroupActivity.this, MapsActivity.class));
+            startActivity(new Intent(JoinGroupActivity.this, MainActivity.class));
         }
 
         @Override

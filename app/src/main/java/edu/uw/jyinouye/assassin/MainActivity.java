@@ -29,19 +29,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 
-import edu.uw.jyinouye.assassin.fragments.MapFragment;
 import edu.uw.jyinouye.assassin.fragments.ChatFragment;
 import edu.uw.jyinouye.assassin.fragments.LeaderboardFragment;
 import edu.uw.jyinouye.assassin.fragments.ProfileFragment;
 import edu.uw.jyinouye.assassin.fragments.ShopFragment;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private Toolbar toolbar;
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
 
+    private SupportMapFragment mMapFragment;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -80,12 +80,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .build();
         }
 
-        //TODO: fix call to .getMapAsyncTask crash
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
-//        mapFragment.setRetainInstance(true);
+        mMapFragment = SupportMapFragment.newInstance();
+        mMapFragment.getMapAsync(this);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, mMapFragment).commit();
+
     }
 
     /**
@@ -128,12 +127,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Create a new fragment and specify the planet to show based on
         // position
         Fragment fragment = null;
-
         Class fragmentClass;
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         switch(menuItem.getItemId()) {
             case R.id.nav_map_fragment:
-                fragmentClass = edu.uw.jyinouye.assassin.fragments.MapFragment.class;
-                break;
+                fragmentManager.beginTransaction().replace(R.id.flContent, mMapFragment).commit();
+                mMapFragment.getMapAsync(this);
+                setTitle(menuItem.getTitle());
+                mDrawer.closeDrawers();
+                return;
             case R.id.nav_chat_fragment:
                 fragmentClass = ChatFragment.class;
                 break;
@@ -147,7 +151,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 fragmentClass = ProfileFragment.class;
                 break;
             default:
-                fragmentClass = MapFragment.class;
+                fragmentClass = ChatFragment.class;
                 break;
         }
 
@@ -158,7 +162,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
         // Highlight the selected item, update the title, and close the drawer
@@ -191,6 +194,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if(permission == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(47.6097, -122.3331)));
             mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
         } else {
             requestPermission();
