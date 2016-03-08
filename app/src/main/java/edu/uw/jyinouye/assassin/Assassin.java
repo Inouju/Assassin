@@ -105,6 +105,14 @@ public class Assassin extends Application implements ValueEventListener {
         ref.child("groups").updateChildren(group);
     }
 
+    public Firebase getRef() {
+        return ref;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
     public void setOnAuthenticateListener(OnAuthenticateListener mListener) {
         mAuthenticateListener = mListener;
     }
