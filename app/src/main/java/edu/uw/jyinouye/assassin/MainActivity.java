@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
+    private MenuItem mLastMenuItem;
 
     private SupportMapFragment mMapFragment;
     private ChatFragment mChatFragment;
@@ -72,24 +74,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Find our drawer view
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
+
         // Setup drawer view
         setupDrawerContent(nvDrawer);
-
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, R.string.nav_open, R.string.nav_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu();
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                invalidateOptionsMenu();
-            }
-        };
-
-        mDrawer.addDrawerListener(mDrawerToggle);
 
         // Poll for location every 10 seconds, max 5 seconds
         mLocationRequest = new LocationRequest();
@@ -166,10 +153,56 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         return true;
                     }
                 });
+
+        //Set up hamburger menu
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawer, R.string.nav_open, R.string.nav_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
+
+        mDrawer.addDrawerListener(mDrawerToggle);
+
+        mLastMenuItem = nvDrawer.getMenu().findItem(R.id.nav_map_fragment);
+
+        //OnClickListener for profile section
+        View headerView = nvDrawer.inflateHeaderView(R.layout.nav_drawer_header);
+        View profileView = headerView.findViewById(R.id.chosen_account_content_view);
+        profileView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.show(mProfileFragment)
+                        .hide(mChatFragment)
+                        .hide(mLeaderboardFragment)
+                        .hide(mMapFragment)
+                        .hide(mShopFragment)
+                        .commit();
+                setTitle("Profile");
+                mDrawer.closeDrawers();
+                selectDrawerItem(null);
+            }
+        });
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
 
+        if(menuItem == null) {
+            if(mLastMenuItem != null) {
+                mLastMenuItem.setChecked(false);
+            }
+            return;
+        }
+
+        mLastMenuItem = menuItem;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
 
@@ -202,13 +235,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mProfileFragment)
                         .hide(mMapFragment);
                 break;
-            case R.id.nav_profile_fragment:
-                ft.show(mProfileFragment)
-                        .hide(mChatFragment)
-                        .hide(mLeaderboardFragment)
-                        .hide(mMapFragment)
-                        .hide(mShopFragment);
-                break;
+//            case R.id.nav_profile_fragment:
+//                ft.show(mProfileFragment)
+//                        .hide(mChatFragment)
+//                        .hide(mLeaderboardFragment)
+//                        .hide(mMapFragment)
+//                        .hide(mShopFragment);
+//                break;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
@@ -222,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Highlight the selected item, update the title, and close the drawer
         // Highlight the selected item has been done by NavigationView
-        // menuItem.setChecked(true);
+        menuItem.setChecked(true);
         setTitle(menuItem.getTitle());
         mDrawer.closeDrawers();
     }
