@@ -49,7 +49,7 @@ public class ChatFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Assassin assassin = (Assassin) getActivity().getApplication();
-        mUserId = assassin.getPlayer().getUid();
+        mUserId = assassin.getPlayer().getEmail();
         mGroup = assassin.getGroup();
 
         mFirebaseRef = assassin.getRef();
