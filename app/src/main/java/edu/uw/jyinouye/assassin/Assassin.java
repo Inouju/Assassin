@@ -140,24 +140,6 @@ public class Assassin extends Application implements ValueEventListener {
         if(dataSnapshot.child("password").getValue().equals(groupPassword)) {
             // reference to list of players for current groupRef
             Firebase playersRef = groupRef.child("players");
-            playersRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot child : dataSnapshot.getChildren()) {
-                        //TODO: get players from firebase, add them to players array field
-                        String uid = child.child("uid").getValue().toString();
-                        String email = child.child("email").getValue().toString();
-
-                        Player player = new Player(uid, email, groupRef.getKey());
-                        //players.add(player);
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
             playersRef.child(this.player.getUid()).setValue(this.player);
             mJoinGroupListener.onJoinGroupSuccess();
         } else {
@@ -185,37 +167,6 @@ public class Assassin extends Application implements ValueEventListener {
         void onJoinGroupSuccess();
 
         void onJoinGroupError(String error);
-    }
-
-    public Map<String, Player> getPlayerList(){
-        //query firebase for all players
-        groupRef.child("players").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //dataSnapshot.forEach(function(childSnaps)
-                for(DataSnapshot child: dataSnapshot.getChildren()){
-                    players.put(child.getKey(), new Player(
-                            child.child("uid").toString(),
-                            child.child("email").toString(),
-                            groupRef.getKey()
-                    ));
-                }
-                //for each through this
-                    //get each uid
-                    //add to list
-
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-
-        Log.v(TAG, "player list \n ============================================ \n" + players.toString() +"\n =============================================");
-
-        return players;
     }
 
 }
