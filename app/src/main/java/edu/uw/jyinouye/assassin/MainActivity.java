@@ -41,6 +41,8 @@ import edu.uw.jyinouye.assassin.fragments.ShopFragment;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    private static final String TAG = "MainActivity";
+
     private Toolbar toolbar;
     private DrawerLayout mDrawer;
     private NavigationView nvDrawer;
@@ -59,10 +61,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Location mLastLocation;
     private static final int LOC_REQUEST_CODE = 0;
 
+    private Assassin assassin;
+    private Player player;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        assassin = ((Assassin)getApplicationContext()).getInstance();
+        player = assassin.getPlayer();
 
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -318,7 +326,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-
+        //TODO: check why location isn't being sent correctly to firebase,
+        player.setLocation(location);
+        Log.v(TAG, "Location:" + location.getLatitude() + ", " + location.getLongitude());
     }
 
     @Override
