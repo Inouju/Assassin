@@ -142,6 +142,12 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         boolean cancel = false;
         View focusView = null;
 
+        if(TextUtils.isEmpty(email)) {
+            mGroupView.setError(getString(R.string.error_field_required));
+            focusView = mGroupView;
+            cancel = true;
+        }
+
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));

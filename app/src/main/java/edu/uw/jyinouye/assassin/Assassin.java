@@ -23,7 +23,7 @@ public class Assassin extends Application implements ValueEventListener, Player.
     private static Assassin singleton;
     private Player player;
     private String groupPassword;
-    private List<Player> players;
+    private List<String> players;
 
     private Firebase ref;
     private Firebase groupRef;
@@ -84,7 +84,6 @@ public class Assassin extends Application implements ValueEventListener, Player.
 
     public void login(String email, String password) {
         player.setEmail(email);
-        player.setPlayerUpdatedListener(this);
         ref.authWithPassword(email, password, authResultHandler);
     }
 
@@ -139,6 +138,24 @@ public class Assassin extends Application implements ValueEventListener, Player.
         if(dataSnapshot.child("password").getValue().equals(groupPassword)) {
             // reference to list of players for current groupRef
             Firebase playersRef = groupRef.child("players");
+            playersRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot child : dataSnapshot.getChildren()) {
+                        //TODO: get players from firebase, add them to players array field
+                        String uid = child.child("uid").getValue().toString();
+                        String email = child.child("email").getValue().toString();
+                        Player player = new Player(uid, email, groupRef.getKey().toString());
+                        players.add(player);
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+            playersRef.child(this.player.getUid()).setValue(this.player);
             mJoinGroupListener.onJoinGroupSuccess();
         } else {
             mJoinGroupListener.onJoinGroupError("Error: incorrect password");
@@ -174,4 +191,32 @@ public class Assassin extends Application implements ValueEventListener, Player.
 
         void onJoinGroupError(String error);
     }
+
+    public List<String> getPlayerList(){
+        //query firebase for all players
+        groupRef.child("players").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //dataSnapshot.forEach(function(childSnaps)
+                for(DataSnapshot child: dataSnapshot.getChildren()){
+                    players.add(child.getKey().toString());
+                }
+                //for each through this
+                    //get each uid
+                    //add to list
+
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+        Log.v(TAG, "player list \n ============================================ \n" + players.toString() +"\n =============================================");
+
+        return players;
+    }
+
 }
