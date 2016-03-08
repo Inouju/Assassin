@@ -22,7 +22,7 @@ public class Assassin extends Application implements ValueEventListener {
 
     private static final String TAG = "Assassin";
     private static Assassin singleton;
-    private String uid;
+    private Player player;
     private String group;
     private String groupPassword;
 
@@ -35,6 +35,7 @@ public class Assassin extends Application implements ValueEventListener {
     public void onCreate() {
         super.onCreate();
         singleton = this;
+        player = new Player();
 
         //Setup firebase
         Firebase.setAndroidContext(this);
@@ -45,8 +46,8 @@ public class Assassin extends Application implements ValueEventListener {
             @Override
             public void onAuthenticated(AuthData authData) {
                 // Authenticated successfully with payload authData
-                uid = authData.getUid();
-                mAuthenticateListener.onLoginSuccess(uid);
+                player.setUid(authData.getUid());
+                mAuthenticateListener.onLoginSuccess(player.getEmail());
             }
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
@@ -65,8 +66,10 @@ public class Assassin extends Application implements ValueEventListener {
         ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
-                Log.v(TAG, "Successfully created user account with uid: " + uid);
-                mAuthenticateListener.onSignUpSuccess(uid);
+                Log.v(TAG, "Successfully created user account with uid: " + result.get("uid"));
+                // add player to firebase players list
+                ref.child("players").child(result.get("uid").toString()).setValue(email);
+                mAuthenticateListener.onSignUpSuccess(player.getUid());
             }
             @Override
             public void onError(FirebaseError firebaseError) {
@@ -78,6 +81,7 @@ public class Assassin extends Application implements ValueEventListener {
     }
 
     public void login(String email, String password) {
+        player.setEmail(email);
         ref.authWithPassword(email, password, authResultHandler);
     }
 
@@ -95,19 +99,10 @@ public class Assassin extends Application implements ValueEventListener {
         Map<String, Object> group = new HashMap<>();
         Map<String, Object> groupDetails = new HashMap<>();
         Map<String, Object> players = new HashMap<>();
-        players.put("default", "value");
         groupDetails.put("password", groupPassword);
         groupDetails.put("players", players);
         group.put(groupName, groupDetails);
         ref.child("groups").updateChildren(group);
-    }
-
-    public String getUserId(){
-        return uid;
-    }
-
-    public String getGroup() {
-        return group;
     }
 
     public void setOnAuthenticateListener(OnAuthenticateListener mListener) {
@@ -130,9 +125,7 @@ public class Assassin extends Application implements ValueEventListener {
         if(dataSnapshot.child("password").getValue().equals(groupPassword)) {
             // reference to list of players for current group
             Firebase players = ref.child("groups").child(dataSnapshot.getKey()).child("players");
-            Map<String, Object> player = new HashMap<>();
-            player.put(uid, "test");
-            players.updateChildren(player);
+            players.child(this.player.getUid()).setValue(this.player);
             mJoinGroupListener.onJoinGroupSuccess();
         } else {
             mJoinGroupListener.onJoinGroupError("Error: incorrect password");
