@@ -109,6 +109,10 @@ public class Assassin extends Application implements ValueEventListener {
         return ref;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     public String getGroup() {
         return group;
     }
