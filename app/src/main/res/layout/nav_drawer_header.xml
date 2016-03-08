@@ -7,7 +7,7 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="160dp"
         android:scaleType="centerCrop"
         android:src="@drawable/material_design_wallpaper" />
 
@@ -15,7 +15,7 @@
         android:id="@+id/profile_image"
         android:layout_marginLeft="@dimen/keyline_1"
         android:layout_marginRight="@dimen/keyline_1"
-        android:layout_marginTop="@dimen/keyline_1"
+        android:layout_marginTop="40dp"
         android:layout_width="@dimen/navdrawer_profile_image_size"
         android:layout_height="@dimen/navdrawer_profile_image_size"
         android:src="@android:drawable/presence_online"
