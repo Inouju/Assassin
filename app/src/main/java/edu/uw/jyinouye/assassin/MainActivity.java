@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .build();
         }
 
+        mGoogleApiClient.connect();
+
         // create references to fragments to add later
         mChatFragment = new ChatFragment();
         mLeaderboardFragment = new LeaderboardFragment();
@@ -337,13 +339,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-        //TODO: check why location isn't being sent correctly to firebase,
-        player.setLocation(location);
+        //TODO: player is null here
+        //player.setLocation(location);
         Log.v(TAG, "Location:" + location.getLatitude() + ", " + location.getLongitude());
     }
 
     @Override
     public void onConnected(Bundle bundle) {
+        Log.v(TAG, "GOOGLEAPICLIENT CONNECTED");
         int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if(permission == PackageManager.PERMISSION_GRANTED) {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
