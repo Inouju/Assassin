@@ -23,7 +23,7 @@ public class Assassin extends Application implements ValueEventListener, Player.
     private static Assassin singleton;
     private Player player;
     private String groupPassword;
-    private List<Player> players;
+    private List<String> players;
 
     private Firebase ref;
     private Firebase groupRef;
@@ -172,4 +172,32 @@ public class Assassin extends Application implements ValueEventListener, Player.
 
         void onJoinGroupError(String error);
     }
+
+    public List<String> getPlayerList(){
+        //query firebase for all players
+        groupRef.child("players").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //dataSnapshot.forEach(function(childSnaps)
+                for(DataSnapshot child: dataSnapshot.getChildren()){
+                    players.add(child.getKey().toString());
+                }
+                //for each through this
+                    //get each uid
+                    //add to list
+
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+        Log.v(TAG, "player list \n ============================================ \n" + players.toString() +"\n =============================================");
+
+        return players;
+    }
+
 }
