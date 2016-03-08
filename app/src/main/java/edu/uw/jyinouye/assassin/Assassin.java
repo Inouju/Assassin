@@ -90,7 +90,7 @@ public class Assassin extends Application implements ValueEventListener, Player.
         this.groupPassword = groupPassword;
         Log.v(TAG, "Join Group");
         // check that password is correct
-        groupRef.addValueEventListener(this);
+        groupRef.addListenerForSingleValueEvent(this);
     }
 
     public void createGroup(String groupName, String groupPassword) {
@@ -136,20 +136,6 @@ public class Assassin extends Application implements ValueEventListener, Player.
         if(dataSnapshot.child("password").getValue().equals(groupPassword)) {
             // reference to list of players for current groupRef
             Firebase playersRef = groupRef.child("players");
-            playersRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot child : dataSnapshot.getChildren()) {
-                        //Player player = new Player(child))
-                        //TODO: get players from firebase, add them to players array field
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
             playersRef.child(this.player.getUid()).setValue(this.player);
             mJoinGroupListener.onJoinGroupSuccess();
         } else {
