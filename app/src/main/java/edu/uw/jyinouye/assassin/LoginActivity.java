@@ -337,10 +337,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-    private void startJoinGroupActivity(String uid) {
-        Intent intent = new Intent(this, JoinGroupActivity.class);
-        intent.putExtra("uid", uid);
-        startActivity(intent);
+    private void startJoinGroupActivity() {
+        startActivity(new Intent(this, JoinGroupActivity.class));
     }
 
     /**
@@ -399,10 +397,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        public void onLoginSuccess(String uid) {
+        public void onLoginSuccess() {
             showProgress(false);
             Log.v(TAG, "Successfully logged in");
-            startJoinGroupActivity(uid);
+            startJoinGroupActivity();
         }
 
         @Override

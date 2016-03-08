@@ -47,7 +47,8 @@ public class Assassin extends Application implements ValueEventListener, Player.
             public void onAuthenticated(AuthData authData) {
                 // Authenticated successfully with payload authData
                 player.setUid(authData.getUid());
-                mAuthenticateListener.onLoginSuccess(player.getEmail());
+                Firebase playerRef = ref.child("players").child(authData.getUid());
+                mAuthenticateListener.onLoginSuccess();
             }
             @Override
             public void onAuthenticationError(FirebaseError firebaseError) {
@@ -68,7 +69,8 @@ public class Assassin extends Application implements ValueEventListener, Player.
             public void onSuccess(Map<String, Object> result) {
                 Log.v(TAG, "Successfully created user account with uid: " + result.get("uid"));
                 // add player to firebase players list
-                ref.child("players").child(result.get("uid").toString()).setValue(email);
+                //player.setUid(result.get("uid").toString());
+                ref.child("players").child(result.get("uid").toString()).child("email").setValue(email);
                 mAuthenticateListener.onSignUpSuccess(player.getUid());
             }
             @Override
@@ -82,6 +84,7 @@ public class Assassin extends Application implements ValueEventListener, Player.
 
     public void login(String email, String password) {
         player.setEmail(email);
+        player.setPlayerUpdatedListener(this);
         ref.authWithPassword(email, password, authResultHandler);
     }
 
@@ -136,7 +139,6 @@ public class Assassin extends Application implements ValueEventListener, Player.
         if(dataSnapshot.child("password").getValue().equals(groupPassword)) {
             // reference to list of players for current groupRef
             Firebase playersRef = groupRef.child("players");
-            playersRef.child(this.player.getUid()).setValue(this.player);
             mJoinGroupListener.onJoinGroupSuccess();
         } else {
             mJoinGroupListener.onJoinGroupError("Error: incorrect password");
@@ -153,7 +155,7 @@ public class Assassin extends Application implements ValueEventListener, Player.
         Map<String, Object> loc = new HashMap<>();
         loc.put("lat", location.getLatitude());
         loc.put("lng", location.getLongitude());
-        groupRef.child(player.getUid()).child("location").updateChildren(loc);
+        groupRef.child("players").child(player.getUid()).child("location").updateChildren(loc);
     }
 
     public interface OnAuthenticateListener {
@@ -161,7 +163,7 @@ public class Assassin extends Application implements ValueEventListener, Player.
 
         void onSignUpError(FirebaseError error);
 
-        void onLoginSuccess(String uid);
+        void onLoginSuccess();
 
         void onLoginError(FirebaseError error);
 

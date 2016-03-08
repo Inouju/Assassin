@@ -344,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLocationChanged(Location location) {
         //TODO: player is null here
-        //player.setLocation(location);
+        player.setLocation(location);
         Log.v(TAG, "Location:" + location.getLatitude() + ", " + location.getLongitude());
     }
 
