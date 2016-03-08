@@ -90,7 +90,7 @@ public class Assassin extends Application implements ValueEventListener, Player.
         this.groupPassword = groupPassword;
         Log.v(TAG, "Join Group");
         // check that password is correct
-        groupRef.addValueEventListener(this);
+        groupRef.addListenerForSingleValueEvent(this);
     }
 
     public void createGroup(String groupName, String groupPassword) {
@@ -112,8 +112,8 @@ public class Assassin extends Application implements ValueEventListener, Player.
         return player;
     }
 
-    public String getGroup() {
-        return groupRef.getKey();
+    public Firebase getGroup() {
+        return groupRef;
     }
 
     public void setOnAuthenticateListener(OnAuthenticateListener mListener) {

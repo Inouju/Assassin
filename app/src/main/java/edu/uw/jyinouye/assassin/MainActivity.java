@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
@@ -37,6 +38,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.uw.jyinouye.assassin.fragments.ChatFragment;
 import edu.uw.jyinouye.assassin.fragments.LeaderboardFragment;
@@ -105,6 +107,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .addApi(LocationServices.API)
                     .build();
         }
+
+        mGoogleApiClient.connect();
 
         // create references to fragments to add later
         mChatFragment = new ChatFragment();
@@ -187,6 +191,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 invalidateOptionsMenu();
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(drawerView.getWindowToken(), 0);
             }
 
             @Override
@@ -312,6 +318,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(47.6097, -122.3331)));
             mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
+            updatePlayerMarkers();
         } else {
             requestPermission();
         }
@@ -345,9 +352,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-        //TODO: check why location isn't being sent correctly to firebase,
-        player.setLocation(location);
+        //TODO: player is null here
+        //player.setLocation(location);
+        updatePlayerMarkers();
         Log.v(TAG, "Location:" + location.getLatitude() + ", " + location.getLongitude());
+    }
+
+    private void updatePlayerMarkers() {
+//        for(Player p : Assassin.getPlayer()) {
+//            mMap.addMarker(new MarkerOptions()
+//                            .position(new LatLng(p.getLocation()))
+//                            .title(p.getEmail())
+//            );
+//        }
     }
 
     @Override

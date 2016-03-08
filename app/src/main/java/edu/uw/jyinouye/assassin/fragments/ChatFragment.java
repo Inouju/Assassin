@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,9 +34,9 @@ import edu.uw.jyinouye.assassin.util.FirebaseListAdapter;
  */
 public class ChatFragment extends Fragment {
 
-    private String mUserId;
-    private String mGroup;
-    private Firebase mFirebaseRef;
+    private String mUserName;
+    private Firebase mGroup;
+    private Firebase mGroupChat;
     private EditText mInputText;
     private ListView mListView;
     private ChatListAdapter mChatListAdapter;
@@ -49,12 +50,9 @@ public class ChatFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Assassin assassin = (Assassin) getActivity().getApplication();
-        mUserId = assassin.getPlayer().getUid();
+        mUserName = assassin.getPlayer().getEmail();
         mGroup = assassin.getGroup();
-
-        mFirebaseRef = assassin.getRef();
-        mFirebaseRef = mFirebaseRef.child("chat").child(mGroup);
-
+        mGroupChat = mGroup.child("chat");
     }
 
     @Override
@@ -91,9 +89,10 @@ public class ChatFragment extends Fragment {
         String input = mInputText.getText().toString();
         if (!input.equals("")) {
             // Create our 'model', a Chat object
-            Chat chat = new Chat(input, mUserId);
+            Chat chat = new Chat(input, mUserName);
             // Create a new, auto-generated child of that chat location, and save our chat data there
-            mFirebaseRef.push().setValue(chat);
+            Log.v("ChatFragment", "push chat");
+            mGroupChat.push().setValue(chat);
             mInputText.setText("");
         }
     }
@@ -103,7 +102,7 @@ public class ChatFragment extends Fragment {
         super.onStart();
 
         // Tell our list adapter that we only want 50 messages at a time
-        mChatListAdapter = new ChatListAdapter(mFirebaseRef.limitToLast(50), getActivity(), R.layout.content_chat, mUserId);
+        mChatListAdapter = new ChatListAdapter(mGroupChat.limitToLast(50), getActivity(), R.layout.content_chat, mUserName);
         mListView.setAdapter(mChatListAdapter);
         mChatListAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
