@@ -140,8 +140,11 @@ public class Assassin extends Application implements ValueEventListener, Player.
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot child : dataSnapshot.getChildren()) {
-                        //Player player = new Player(child))
                         //TODO: get players from firebase, add them to players array field
+                        String uid = child.child("uid").getValue().toString();
+                        String email = child.child("email").getValue().toString();
+                        Player player = new Player(uid, email, groupRef.getKey().toString());
+                        players.add(player);
                     }
                 }
 
