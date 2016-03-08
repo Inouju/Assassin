@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,6 +91,7 @@ public class ChatFragment extends Fragment {
             // Create our 'model', a Chat object
             Chat chat = new Chat(input, mUserName);
             // Create a new, auto-generated child of that chat location, and save our chat data there
+            Log.v("ChatFragment", "push chat");
             mGroupChat.push().setValue(chat);
             mInputText.setText("");
         }
