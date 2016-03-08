@@ -18,6 +18,7 @@
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
+    <string name="prompt_user_name">Username</string>
     <string name="prompt_user_password">User Password</string>
     <string name="prompt_user_password_confirm">Confirm Password</string>
     <string name="prompt_group_name">Group Name</string>

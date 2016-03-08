@@ -2,11 +2,20 @@ package edu.uw.jyinouye.assassin;
 
 import android.content.Intent;
 import android.location.Location;
+import android.util.Log;
+
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by colec on 3/6/2016.
  */
 public class Player {
+
+    private Firebase playerRef;
 
     private String uid;
     private String email;
@@ -21,12 +30,17 @@ public class Player {
     public Player() {}
 
     public Player(String uid, String email, String groupName) {
+
         this.uid = uid;
         this.email = email;
         this.groupName = groupName;
         this.kills = 0;
         this.deaths = 0;
         this.currency = 0;
+    }
+
+    public void setRef(Firebase ref) {
+        playerRef = ref;
     }
 
     public void incKill() {
@@ -67,12 +81,12 @@ public class Player {
     public Location getLocation() { return this.location; }
 
     public void setLocation(Location location) {
-        mPlayerUpdatedListener.onPlayerLocationChanged(location);
+        Log.v("PlayerObject", "set location");
+        Map<String, Object> loc = new HashMap<>();
+        loc.put("lat", location.getLatitude());
+        loc.put("lng", location.getLongitude());
+        playerRef.child("players").child(uid).child("location").updateChildren(loc);
         this.location = location;
-    }
-
-    public void setPlayerUpdatedListener(OnPlayerUpdatedListener mListener) {
-        mPlayerUpdatedListener = mListener;
     }
 
     //interface allows Assassin class to listen for changes in player location, send them to firebase

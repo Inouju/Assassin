@@ -70,8 +70,7 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         assassin = ((Assassin)getApplicationContext()).getInstance();
         groupNames = new ArrayList<>();
 
-        Bundle extras = getIntent().getExtras();
-        ((TextView) findViewById(R.id.user_name)).setText(extras.getString("uid"));
+        ((TextView) findViewById(R.id.user_name)).setText(assassin.getPlayer().getEmail());
 
         // Set up the login form.
         mJoinGroup = (Button) findViewById(R.id.join_group);
