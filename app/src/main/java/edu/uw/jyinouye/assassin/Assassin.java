@@ -136,6 +136,23 @@ public class Assassin extends Application implements ValueEventListener, Player.
         if(dataSnapshot.child("password").getValue().equals(groupPassword)) {
             // reference to list of players for current groupRef
             Firebase playersRef = groupRef.child("players");
+            playersRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot child : dataSnapshot.getChildren()) {
+                        //TODO: get players from firebase, add them to players array field
+                        String uid = child.child("uid").getValue().toString();
+                        String email = child.child("email").getValue().toString();
+                        Player player = new Player(uid, email, groupRef.getKey().toString());
+                        players.add(player);
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
             playersRef.child(this.player.getUid()).setValue(this.player);
             mJoinGroupListener.onJoinGroupSuccess();
         } else {
