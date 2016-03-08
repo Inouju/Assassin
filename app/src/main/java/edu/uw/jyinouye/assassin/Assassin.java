@@ -9,6 +9,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,13 +18,13 @@ import java.util.Map;
 /**
  * Application class that contains global state for login and auth stuff
  */
-public class Assassin extends Application implements ValueEventListener, Player.OnPlayerUpdatedListener {
+public class Assassin extends Application implements ValueEventListener {
 
     private static final String TAG = "Assassin";
     private static Assassin singleton;
     private Player player;
     private String groupPassword;
-    private List<String> players;
+    private Map<String, Player> players;
 
     private Firebase ref;
     private Firebase groupRef;
@@ -90,6 +91,7 @@ public class Assassin extends Application implements ValueEventListener, Player.
     public void joinGroup(String groupName, String groupPassword) {
         this.groupRef = ref.child("groups").child(groupName);
         this.groupPassword = groupPassword;
+        player.setRef(this.groupRef);
         Log.v(TAG, "Join Group");
         // check that password is correct
         groupRef.addListenerForSingleValueEvent(this);
@@ -145,8 +147,9 @@ public class Assassin extends Application implements ValueEventListener, Player.
                         //TODO: get players from firebase, add them to players array field
                         String uid = child.child("uid").getValue().toString();
                         String email = child.child("email").getValue().toString();
-                        Player player = new Player(uid, email, groupRef.getKey().toString());
-                        players.add(player);
+
+                        Player player = new Player(uid, email, groupRef.getKey());
+                        //players.add(player);
                     }
                 }
 
@@ -167,14 +170,6 @@ public class Assassin extends Application implements ValueEventListener, Player.
 
     }
 
-    @Override
-    public void onPlayerLocationChanged(Location location) {
-        Map<String, Object> loc = new HashMap<>();
-        loc.put("lat", location.getLatitude());
-        loc.put("lng", location.getLongitude());
-        groupRef.child("players").child(player.getUid()).child("location").updateChildren(loc);
-    }
-
     public interface OnAuthenticateListener {
         void onSignUpSuccess(String uid);
 
@@ -192,14 +187,18 @@ public class Assassin extends Application implements ValueEventListener, Player.
         void onJoinGroupError(String error);
     }
 
-    public List<String> getPlayerList(){
+    public Map<String, Player> getPlayerList(){
         //query firebase for all players
         groupRef.child("players").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //dataSnapshot.forEach(function(childSnaps)
                 for(DataSnapshot child: dataSnapshot.getChildren()){
-                    players.add(child.getKey().toString());
+                    players.put(child.getKey(), new Player(
+                            child.child("uid").toString(),
+                            child.child("email").toString(),
+                            groupRef.getKey()
+                    ));
                 }
                 //for each through this
                     //get each uid
