@@ -112,8 +112,8 @@ public class Assassin extends Application implements ValueEventListener, Player.
         return player;
     }
 
-    public String getGroup() {
-        return groupRef.getKey();
+    public Firebase getGroup() {
+        return groupRef;
     }
 
     public void setOnAuthenticateListener(OnAuthenticateListener mListener) {
