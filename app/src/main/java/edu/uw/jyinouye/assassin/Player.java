@@ -1,5 +1,8 @@
 package edu.uw.jyinouye.assassin;
 
+import android.content.Intent;
+import android.location.Location;
+
 /**
  * Created by colec on 3/6/2016.
  */
@@ -8,6 +11,9 @@ public class Player {
     private String uid;
     private String email;
     private String groupName;
+    private Location location;
+
+    private OnPlayerUpdatedListener mPlayerUpdatedListener;
 
     public Player() {}
 
@@ -39,5 +45,21 @@ public class Player {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public Location getLocation() { return this.location; }
+
+    public void setLocation(Location location) {
+        mPlayerUpdatedListener.onPlayerLocationChanged(location);
+        this.location = location;
+    }
+
+    public void setPlayerUpdatedListener(OnPlayerUpdatedListener mListener) {
+        mPlayerUpdatedListener = mListener;
+    }
+
+    //interface allows Assassin class to listen for changes in player location, send them to firebase
+    public interface OnPlayerUpdatedListener {
+        void onPlayerLocationChanged(Location location);
     }
 }
