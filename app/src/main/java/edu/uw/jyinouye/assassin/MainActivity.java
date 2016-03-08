@@ -37,6 +37,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.uw.jyinouye.assassin.fragments.ChatFragment;
 import edu.uw.jyinouye.assassin.fragments.LeaderboardFragment;
@@ -310,6 +311,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(47.6097, -122.3331)));
             mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
+            updatePlayerMarkers();
         } else {
             requestPermission();
         }
@@ -345,7 +347,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onLocationChanged(Location location) {
         //TODO: player is null here
         //player.setLocation(location);
+        updatePlayerMarkers();
         Log.v(TAG, "Location:" + location.getLatitude() + ", " + location.getLongitude());
+    }
+
+    private void updatePlayerMarkers() {
+//        for(Player p : Assassin.getPlayer()) {
+//            mMap.addMarker(new MarkerOptions()
+//                            .position(new LatLng(p.getLocation()))
+//                            .title(p.getEmail())
+//            );
+//        }
     }
 
     @Override
