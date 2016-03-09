@@ -27,6 +27,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
@@ -44,6 +45,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -384,6 +387,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLocationChanged(Location location) {
         player.setLocation(location);
+        mLastLocation = location;
         updatePlayerMarkers();
     }
 
@@ -392,12 +396,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Collection<Player> playersCopy = players.values();
         Log.v(TAG, "Attempting to update player markers. #Players = " + playersCopy.size());
         for(Player p : playersCopy) {
-            if(!p.getEmail().equals(player.getEmail())) {
+            if (!p.getEmail().equals(player.getEmail())) {
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(p.getLatitude(), p.getLongitude()))
                         .title(p.getEmail())
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_player_marker))
                 );
+                checkRange(p);
+                Log.v(TAG, "Player: " + p.getEmail() + ", location " + p.getLatitude() + ", " + p.getLongitude());
             }
+        }
+    }
+
+    private void checkRange(Player p) {
+        Location l = new Location("");
+        l.setLatitude(p.getLatitude());
+        l.setLongitude(p.getLongitude());
+        float distance = l.distanceTo(mLastLocation);
+        if(distance < .1) {
+            Toast toast = Toast.makeText(this, p.getEmail() + " is in range", Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 
@@ -405,7 +423,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //query firebase for all players
         final Firebase groupRef = assassin.getGroup();
         groupRef.child("players").addChildEventListener(new ChildEventListener() {
-
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Player player = dataSnapshot.getValue(Player.class);
