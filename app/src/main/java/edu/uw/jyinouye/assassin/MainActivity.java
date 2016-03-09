@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         assassin = ((Assassin)getApplicationContext()).getInstance();
         player = assassin.getPlayer();
+        Log.v(TAG, "Player email: " + player.getEmail());
         players = new HashMap<>();
 
         // Set a Toolbar to replace the ActionBar.
@@ -177,6 +178,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.v("hi", assassin.getPlayer().getKills()+"");
             }
         });
+
+        getPlayerList();
     }
 
     /**
@@ -363,7 +366,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             requestPermission();
         }
-        getPlayerList();
     }
 
     // Handles conversion between Location and LatLng
@@ -399,10 +401,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void updatePlayerMarkers() {
+        mMap.clear();
         Collection<Player> playersCopy = players.values();
         for(Player p : playersCopy) {
-            mMap.clear();
-            if(p.getLocation() != null) {
+            if(p.getLocation() != null && !p.getEmail().equals(player.getEmail())) {
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(p.getLocation().getLatitude(), p.getLocation().getLongitude()))
                         .title(p.getEmail())
@@ -418,11 +420,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Object uid = dataSnapshot.child("uid").toString();
+                if(uid == null) {
+                    return;
+                }
                 Player player = new Player(
-                        dataSnapshot.child("uid").toString(),
-                        dataSnapshot.child("email").toString(),
+                        dataSnapshot.child("uid").getValue().toString(),
+                        dataSnapshot.child("email").getValue().toString(),
                         groupRef.getKey()
                 );
+                player.setRef(groupRef);
+                Location loc = new Location("");
+                Object lat = dataSnapshot.child("location").child("lat").getValue();
+                Object lng = dataSnapshot.child("location").child("lng").getValue();
+                if(lat != null && lng != null) {
+                    loc.setLatitude((double) lat);
+                    loc.setLongitude((double) lng);
+                    player.setLocalLocation(loc);
+                }
                 players.put(dataSnapshot.getKey(), player);
             }
 
@@ -436,16 +451,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     loc.setLatitude((double)lat);
                     loc.setLongitude((double)lng);
                     changedPlayer.setRef(groupRef);
-                    changedPlayer.setLocation(loc);
+                    changedPlayer.setLocalLocation(loc);
                 }
                 players.put(dataSnapshot.getKey(), changedPlayer);
-                Log.v(TAG, dataSnapshot.getValue().toString());
-                Log.v(TAG, "Child changed, user moved");
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 players.remove(dataSnapshot.getKey());
+
             }
 
             @Override
@@ -500,6 +514,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
                 break;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mGoogleApiClient.isConnected()) {
+            startLocationUpdates();
         }
     }
 }

@@ -106,6 +106,11 @@ public class Player {
         this.location = location;
     }
 
+    // For use to set location for other players without updating the database with old locations
+    public void setLocalLocation(Location location) {
+        this.location = location;
+    }
+
     //interface allows Assassin class to listen for changes in player location, send them to firebase
     public interface OnPlayerUpdatedListener {
         void onPlayerLocationChanged(Location location);

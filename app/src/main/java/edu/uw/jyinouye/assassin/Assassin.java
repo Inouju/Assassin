@@ -50,6 +50,7 @@ public class Assassin extends Application implements ValueEventListener {
             @Override
             public void onAuthenticated(AuthData authData) {
                 // Authenticated successfully with payload authData
+                Log.v(TAG, "Authed with " + authData.getUid());
                 player.setUid(authData.getUid());
                 playerRef = ref.child("players").child(authData.getUid());
                 mAuthenticateListener.onLoginSuccess();
