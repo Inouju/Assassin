@@ -20,6 +20,7 @@ public class Player {
     private String uid;
     private String targetuid;
     private String email;
+    private String userName;
     private String groupName;
     private Location location;
     private int kills;
@@ -76,6 +77,14 @@ public class Player {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getGroupName() {

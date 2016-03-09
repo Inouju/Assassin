@@ -1,6 +1,7 @@
 package edu.uw.jyinouye.assassin;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -27,6 +28,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -44,7 +46,9 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.uw.jyinouye.assassin.fragments.ChatFragment;
@@ -349,6 +353,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             requestPermission();
         }
+        getPlayerList();
     }
 
     // Handles conversion between Location and LatLng
@@ -381,39 +386,61 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onLocationChanged(Location location) {
         player.setLocation(location);
         updatePlayerMarkers();
-        Log.v(TAG, "Location:" + location.getLatitude() + ", " + location.getLongitude());
     }
 
     private void updatePlayerMarkers() {
-        for(Player p : players.values()) {
+        Collection<Player> playersCopy = players.values();
+        for(Player p : playersCopy) {
             mMap.clear();
-            mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(p.getLocation().getLatitude(), p.getLocation().getLongitude()))
-                            .title(p.getEmail())
-            );
+            if(p.getLocation() != null) {
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(p.getLocation().getLatitude(), p.getLocation().getLongitude()))
+                        .title(p.getEmail())
+                );
+            }
         }
     }
 
-    public Map<String, Player> getPlayerList(){
+    public void getPlayerList(){
         //query firebase for all players
         final Firebase groupRef = assassin.getGroup();
-        groupRef.child("players").addValueEventListener(new ValueEventListener() {
+        groupRef.child("players").addChildEventListener(new ChildEventListener() {
+
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //dataSnapshot.forEach(function(childSnaps)
-                for(DataSnapshot child: dataSnapshot.getChildren()){
-                    Player player = new Player(
-                            child.child("uid").toString(),
-                            child.child("email").toString(),
-                            groupRef.getKey()
-                    );
-                    Location loc = new Location("");
-                    loc.setLatitude((double)child.child("location").child("lat").getValue());
-                    loc.setLongitude((double)child.child("location").child("lng").getValue());
-                    player.setLocation(loc);
-                    players.put(child.getKey(), player);
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Player player = new Player(
+                        dataSnapshot.child("uid").toString(),
+                        dataSnapshot.child("email").toString(),
+                        groupRef.getKey()
+                );
+                players.put(dataSnapshot.getKey(), player);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Player changedPlayer = players.get(dataSnapshot.getKey());
+                Location loc = new Location("");
+                Object lat = dataSnapshot.child("location").child("lat").getValue();
+                Object lng = dataSnapshot.child("location").child("lng").getValue();
+                if(lat != null && lng != null) {
+                    loc.setLatitude((double)lat);
+                    loc.setLongitude((double)lng);
+                    changedPlayer.setRef(groupRef);
+                    changedPlayer.setLocation(loc);
                 }
-                updatePlayerMarkers();
+                players.put(dataSnapshot.getKey(), changedPlayer);
+                Log.v(TAG, dataSnapshot.getValue().toString());
+                Log.v(TAG, "Child changed, user moved");
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                players.remove(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
@@ -421,32 +448,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
-
-        Log.v(TAG, "player list \n ============================================ \n" + players.toString() +"\n =============================================");
-
-        return players;
     }
-
-
-
-    //            playersRef.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    for(DataSnapshot child : dataSnapshot.getChildren()) {
-//                        //TODO: get players from firebase, add them to players array field
-//                        String uid = child.child("uid").getValue().toString();
-//                        String email = child.child("email").getValue().toString();
-//
-//                        Player player = new Player(uid, email, groupRef.getKey());
-//                        //players.add(player);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(FirebaseError firebaseError) {
-//
-//                }
-//            });
 
     @Override
     public void onConnected(Bundle bundle) {

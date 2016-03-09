@@ -68,7 +68,7 @@ public class Assassin extends Application implements ValueEventListener {
         return this.singleton;
     }
 
-    public void signup(final String email, final String password) {
+    public void signup(final String email, final String password, final String userName) {
         ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
@@ -76,6 +76,7 @@ public class Assassin extends Application implements ValueEventListener {
                 // add player to firebase players list
                 //player.setUid(result.get("uid").toString());
                 ref.child("players").child(result.get("uid").toString()).child("email").setValue(email);
+                ref.child("players").child(result.get("uid").toString()).child("user-name").setValue(userName);
                 mAuthenticateListener.onSignUpSuccess(player.getUid());
             }
 
