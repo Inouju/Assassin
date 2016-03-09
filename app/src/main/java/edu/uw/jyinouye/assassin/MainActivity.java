@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         bundle.putInt("deaths", player.getDeaths());
         bundle.putInt("currency", player.getCurrency());
         bundle.putString("name", player.getEmail());
+        bundle.putString("targetuid", player.getTargetuid());
         mProfileFragment = new ProfileFragment();
         mProfileFragment.setArguments(bundle);
 
