@@ -27,6 +27,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -392,31 +393,46 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public Map<String, Player> getPlayerList(){
+    public void getPlayerList(){
         //query firebase for all players
         final Firebase groupRef = assassin.getGroup();
-        groupRef.child("players").addValueEventListener(new ValueEventListener() {
+        groupRef.child("players").addChildEventListener(new ChildEventListener() {
+
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //dataSnapshot.forEach(function(childSnaps)
-                for(DataSnapshot child: dataSnapshot.getChildren()){
-                    Player player = new Player(
-                            child.child("uid").toString(),
-                            child.child("email").toString(),
-                            groupRef.getKey()
-                    );
-                    Location loc = new Location("");
-                    Object lat = child.child("location").child("lat").getValue();
-                    Object lng = child.child("location").child("lng").getValue();
-                    if(lat != null && lng != null) {
-                        loc.setLatitude((double)lat);
-                        loc.setLongitude((double)lng);
-                        player.setRef(groupRef);
-                        player.setLocation(loc);
-                    }
-                    players.put(child.getKey(), player);
-                    Log.v(TAG, child.getValue().toString());
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Player player = new Player(
+                        dataSnapshot.child("uid").toString(),
+                        dataSnapshot.child("email").toString(),
+                        groupRef.getKey()
+                );
+                players.put(dataSnapshot.getKey(), player);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Player changedPlayer = players.get(dataSnapshot.getKey());
+                Location loc = new Location("");
+                Object lat = dataSnapshot.child("location").child("lat").getValue();
+                Object lng = dataSnapshot.child("location").child("lng").getValue();
+                if(lat != null && lng != null) {
+                    loc.setLatitude((double)lat);
+                    loc.setLongitude((double)lng);
+                    changedPlayer.setRef(groupRef);
+                    changedPlayer.setLocation(loc);
                 }
+                players.put(dataSnapshot.getKey(), changedPlayer);
+                Log.v(TAG, dataSnapshot.getValue().toString());
+                Log.v(TAG, "Child changed, user moved");
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                players.remove(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
@@ -424,10 +440,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
-
-        Log.v(TAG, "player list \n ============================================ \n" + players.toString() +"\n =============================================");
-
-        return players;
     }
 
     @Override
