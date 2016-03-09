@@ -32,6 +32,7 @@ public class Assassin extends Application implements ValueEventListener {
     private Firebase groupRef;
     private Firebase.AuthResultHandler authResultHandler;
     private OnAuthenticateListener mAuthenticateListener;
+    private Firebase playerRef;
     private OnJoinGroupListener mJoinGroupListener;
 
     @Override
@@ -50,7 +51,7 @@ public class Assassin extends Application implements ValueEventListener {
             public void onAuthenticated(AuthData authData) {
                 // Authenticated successfully with payload authData
                 player.setUid(authData.getUid());
-                Firebase playerRef = ref.child("players").child(authData.getUid());
+                playerRef = ref.child("players").child(authData.getUid());
                 mAuthenticateListener.onLoginSuccess();
             }
             @Override
@@ -113,8 +114,25 @@ public class Assassin extends Application implements ValueEventListener {
     }
 
     public void killPressed() {
-        ref.orderByChild("kills");
         player.incKill();
+        final Firebase playerkill = groupRef.child("players").child(player.getUid()).child("kills");
+        final int[] counter = {0};
+        ValueEventListener listener = playerkill.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (counter[0] < 1) {
+                    Integer value = (int) (long) dataSnapshot.getValue();
+                    counter[0]++;
+                    playerkill.setValue(value + 1);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+        //playerkill.setValue(player.getKills());
     }
 
     public Firebase getRef() {

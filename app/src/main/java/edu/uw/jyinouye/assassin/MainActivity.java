@@ -165,7 +165,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         final Button button = (Button) findViewById(R.id.kill_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                assassin.getPlayer().incKill();
                 assassin.killPressed();
                 Log.v("hi", assassin.getPlayer().getKills()+"");
             }

@@ -18,6 +18,7 @@ public class Player {
     private Firebase groupRef;
 
     private String uid;
+    private String targetuid;
     private String email;
     private String groupName;
     private Location location;
@@ -37,6 +38,7 @@ public class Player {
         this.kills = 0;
         this.deaths = 0;
         this.currency = 0;
+        this.targetuid = "YOU!";
     }
 
     public void setRef(Firebase ref) {
@@ -60,6 +62,12 @@ public class Player {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getTargetuid() { return targetuid; }
+
+    public void setTargetuid(String tuid) {
+        this.targetuid = tuid;
     }
 
     public String getEmail() {
