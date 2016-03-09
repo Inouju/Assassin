@@ -196,6 +196,8 @@ public class Assassin extends Application implements ValueEventListener {
                     mPlayer.setDeaths(player.getDeaths());
                     mPlayer.setCurrency(player.getCurrency());
                     mPlayer.setUserName(player.getUserName());
+                    mPlayer.setTargetuid(player.getTargetuid());
+                    mPlayer.setisPlaying(player.isPlaying);
                 }
 
                 @Override

@@ -491,4 +491,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             startLocationUpdates();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
 }

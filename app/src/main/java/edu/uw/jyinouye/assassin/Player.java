@@ -28,6 +28,7 @@ public class Player {
     private long kills;
     private long deaths;
     private long currency;
+    public boolean isPlaying;
 
     private OnPlayerUpdatedListener mPlayerUpdatedListener;
 
@@ -42,6 +43,7 @@ public class Player {
         this.deaths = 0;
         this.currency = 0;
         this.targetuid = "YOU!";
+        this.isPlaying = false;
     }
 
     public void setRef(Firebase ref) {
@@ -51,6 +53,10 @@ public class Player {
     public void incKill() {
         kills = kills + 1;
         currency = currency + 5;
+    }
+
+    public void setisPlaying(boolean isPlaying2) {
+        isPlaying = isPlaying2;
     }
 
     public void incDeath() { deaths = deaths + 1; }
