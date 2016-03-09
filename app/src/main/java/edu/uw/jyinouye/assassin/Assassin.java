@@ -8,6 +8,8 @@ import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.MutableData;
+import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -58,6 +60,7 @@ public class Assassin extends Application implements ValueEventListener {
                 mAuthenticateListener.onLoginError(firebaseError);
             }
         };
+
     }
 
     public Assassin getInstance() {
@@ -74,6 +77,7 @@ public class Assassin extends Application implements ValueEventListener {
                 ref.child("players").child(result.get("uid").toString()).child("email").setValue(email);
                 mAuthenticateListener.onSignUpSuccess(player.getUid());
             }
+
             @Override
             public void onError(FirebaseError firebaseError) {
                 // there was an error
@@ -106,6 +110,11 @@ public class Assassin extends Application implements ValueEventListener {
         groupDetails.put("players", players);
         group.put(groupName, groupDetails);
         ref.child("groups").updateChildren(group);
+    }
+
+    public void killPressed() {
+        ref.orderByChild("kills");
+        player.incKill();
     }
 
     public Firebase getRef() {

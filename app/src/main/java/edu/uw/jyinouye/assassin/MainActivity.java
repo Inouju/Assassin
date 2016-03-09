@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
@@ -150,6 +151,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
         }
+        final Button button = (Button) findViewById(R.id.kill_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                assassin.getPlayer().incKill();
+                assassin.killPressed();
+                Log.v("hi", assassin.getPlayer().getKills()+"");
+            }
+        });
     }
 
     /**
