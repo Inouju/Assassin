@@ -23,8 +23,8 @@ public class Player {
     private String userName;
     private String groupName;
     private Location location;
-    private long latitude;
-    private long longitude;
+    private double latitude;
+    private double longitude;
     private long kills;
     private long deaths;
     private long currency;
@@ -115,20 +115,26 @@ public class Player {
         this.currency = currency;
     }
 
-    public long getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public long getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     public void setLocation(Location location) {
-        Log.v("PlayerObject", "set location");
-        Map<String, Object> loc = new HashMap<>();
-        loc.put("latitude", location.getLatitude());
-        loc.put("longitude", location.getLongitude());
-        groupRef.child("players").child(uid).updateChildren(loc);
+        Log.v("PlayerObject", "set location: " + location.getLatitude() + " " + location.getLongitude());
+        groupRef.child("players").child(uid).child("latitude").setValue((double)location.getLatitude());
+        groupRef.child("players").child(uid).child("longitude").setValue((double)location.getLongitude());
         this.location = location;
     }
 

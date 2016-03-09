@@ -390,6 +390,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void updatePlayerMarkers() {
         mMap.clear();
         Collection<Player> playersCopy = players.values();
+        Log.v(TAG, "Attempting to update player markers. #Players = " + playersCopy.size());
         for(Player p : playersCopy) {
             if(!p.getEmail().equals(player.getEmail())) {
                 mMap.addMarker(new MarkerOptions()
@@ -408,12 +409,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Player player = dataSnapshot.getValue(Player.class);
+                player.setLatitude((double)dataSnapshot.child("latitude").getValue());
+                player.setLongitude((double)dataSnapshot.child("longitude").getValue());
                 players.put(dataSnapshot.getKey(), player);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Player databasePlayer = dataSnapshot.getValue(Player.class);
+                Log.v(TAG, "databaseplayer lat: " + dataSnapshot.child("latitude").getValue());
+                Log.v(TAG, "databaseplayer lng:" + dataSnapshot.child("longitude").getValue());
+                databasePlayer.setLatitude((double)dataSnapshot.child("latitude").getValue());
+                databasePlayer.setLongitude((double)dataSnapshot.child("longitude").getValue());
                 players.put(dataSnapshot.getKey(), databasePlayer);
             }
 
