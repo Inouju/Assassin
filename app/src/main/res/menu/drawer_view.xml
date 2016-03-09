@@ -19,9 +19,9 @@
         android:id="@+id/nav_shop_fragment"
         android:icon="@drawable/ic_nav_shop"
         android:title="@string/nav_shop_fragment" />
-    <item
-        android:id="@+id/nav_profile_fragment"
-        android:icon="@drawable/ic_nav_profile"
-        android:title="@string/nav_profile_fragment" />
+    <!--<item-->
+        <!--android:id="@+id/nav_profile_fragment"-->
+        <!--android:icon="@drawable/ic_nav_profile"-->
+        <!--android:title="@string/nav_profile_fragment" />-->
 </group>
 </menu>

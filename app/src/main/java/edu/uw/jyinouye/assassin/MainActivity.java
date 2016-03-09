@@ -307,13 +307,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mProfileFragment)
                         .hide(mMapFragment);
                 break;
-            case R.id.nav_profile_fragment:
-                ft.show(mProfileFragment)
-                        .hide(mChatFragment)
-                        .hide(mLeaderboardFragment)
-                        .hide(mMapFragment)
-                        .hide(mShopFragment);
-                break;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
@@ -425,6 +418,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         groupRef.getKey()
                 );
                 player.setRef(groupRef);
+                player.setKills((long) dataSnapshot.child("kills").getValue());
+                player.setDeaths((long) dataSnapshot.child("deaths").getValue());
+                player.setCurrency((long) dataSnapshot.child("currency").getValue());
                 Location loc = new Location("");
                 Object lat = dataSnapshot.child("location").child("lat").getValue();
                 Object lng = dataSnapshot.child("location").child("lng").getValue();
@@ -448,6 +444,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     changedPlayer.setRef(groupRef);
                     changedPlayer.setLocalLocation(loc);
                 }
+                changedPlayer.setKills((long) dataSnapshot.child("kills").getValue());
+                changedPlayer.setDeaths((long) dataSnapshot.child("deaths").getValue());
+                changedPlayer.setCurrency((long) dataSnapshot.child("currency").getValue());
                 players.put(dataSnapshot.getKey(), changedPlayer);
             }
 
