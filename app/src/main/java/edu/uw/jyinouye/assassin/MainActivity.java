@@ -26,7 +26,10 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.firebase.client.AuthData;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -39,6 +42,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.uw.jyinouye.assassin.fragments.ChatFragment;
 import edu.uw.jyinouye.assassin.fragments.LeaderboardFragment;
@@ -61,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LeaderboardFragment mLeaderboardFragment;
     private ProfileFragment mProfileFragment;
     private ShopFragment mShopFragment;
+    //private ProfileFragment fragInfo;
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -70,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private Assassin assassin;
     private Player player;
+    private Map<String, Player> players;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         assassin = ((Assassin)getApplicationContext()).getInstance();
         player = assassin.getPlayer();
+        players = new HashMap<>();
 
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -122,7 +131,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Setup initial state where all but mapfragment is hidden
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("kills", player.getKills());
+        bundle.putInt("deaths", player.getDeaths());
+        bundle.putInt("currency", player.getCurrency());
+        bundle.putString("name", player.getEmail());
+        mProfileFragment = new ProfileFragment();
+        mProfileFragment.setArguments(bundle);
+
+        fragmentManager
+        .beginTransaction()
                 .add(R.id.flContent, mMapFragment)
                 .add(R.id.flContent, mChatFragment)
                 .add(R.id.flContent, mLeaderboardFragment)
@@ -268,13 +287,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mProfileFragment)
                         .hide(mMapFragment);
                 break;
-//            case R.id.nav_profile_fragment:
-//                ft.show(mProfileFragment)
-//                        .hide(mChatFragment)
-//                        .hide(mLeaderboardFragment)
-//                        .hide(mMapFragment)
-//                        .hide(mShopFragment);
-//                break;
+            case R.id.nav_profile_fragment:
+                ft.show(mProfileFragment)
+                        .hide(mChatFragment)
+                        .hide(mLeaderboardFragment)
+                        .hide(mMapFragment)
+                        .hide(mShopFragment);
+                break;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
@@ -358,13 +377,68 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void updatePlayerMarkers() {
-//        for(Player p : Assassin.getPlayer()) {
-//            mMap.addMarker(new MarkerOptions()
-//                            .position(new LatLng(p.getLocation()))
-//                            .title(p.getEmail())
-//            );
-//        }
+        for(Player p : players.values()) {
+            mMap.clear();
+            mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(p.getLocation().getLatitude(), p.getLocation().getLongitude()))
+                            .title(p.getEmail())
+            );
+        }
     }
+
+    public Map<String, Player> getPlayerList(){
+        //query firebase for all players
+        final Firebase groupRef = assassin.getGroup();
+        groupRef.child("players").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //dataSnapshot.forEach(function(childSnaps)
+                for(DataSnapshot child: dataSnapshot.getChildren()){
+                    Player player = new Player(
+                            child.child("uid").toString(),
+                            child.child("email").toString(),
+                            groupRef.getKey()
+                    );
+                    Location loc = new Location("");
+                    loc.setLatitude((double)child.child("location").child("lat").getValue());
+                    loc.setLongitude((double)child.child("location").child("lng").getValue());
+                    player.setLocation(loc);
+                    players.put(child.getKey(), player);
+                }
+                updatePlayerMarkers();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+        Log.v(TAG, "player list \n ============================================ \n" + players.toString() +"\n =============================================");
+
+        return players;
+    }
+
+
+
+    //            playersRef.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    for(DataSnapshot child : dataSnapshot.getChildren()) {
+//                        //TODO: get players from firebase, add them to players array field
+//                        String uid = child.child("uid").getValue().toString();
+//                        String email = child.child("email").getValue().toString();
+//
+//                        Player player = new Player(uid, email, groupRef.getKey());
+//                        //players.add(player);
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(FirebaseError firebaseError) {
+//
+//                }
+//            });
 
     @Override
     public void onConnected(Bundle bundle) {

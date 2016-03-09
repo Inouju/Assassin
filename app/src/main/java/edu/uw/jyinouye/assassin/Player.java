@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class Player {
 
-    private Firebase playerRef;
+    private Firebase groupRef;
 
     private String uid;
     private String email;
@@ -40,7 +40,7 @@ public class Player {
     }
 
     public void setRef(Firebase ref) {
-        playerRef = ref;
+        groupRef = ref;
     }
 
     public void incKill() {
@@ -85,7 +85,7 @@ public class Player {
         Map<String, Object> loc = new HashMap<>();
         loc.put("lat", location.getLatitude());
         loc.put("lng", location.getLongitude());
-        playerRef.child("players").child(uid).child("location").updateChildren(loc);
+        groupRef.child("players").child(uid).child("location").updateChildren(loc);
         this.location = location;
     }
 

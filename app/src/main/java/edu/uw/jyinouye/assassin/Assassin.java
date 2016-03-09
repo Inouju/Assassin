@@ -1,6 +1,7 @@
 package edu.uw.jyinouye.assassin;
 
 import android.app.Application;
+import android.location.Location;
 import android.util.Log;
 
 import com.firebase.client.AuthData;
@@ -8,8 +9,10 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,10 +22,9 @@ public class Assassin extends Application implements ValueEventListener {
 
     private static final String TAG = "Assassin";
     private static Assassin singleton;
-   private Player player;
+    private Player player;
     private String groupPassword;
     private Map<String, Player> players;
-
 
     private Firebase ref;
     private Firebase groupRef;
@@ -34,7 +36,7 @@ public class Assassin extends Application implements ValueEventListener {
     public void onCreate() {
         super.onCreate();
         singleton = this;
-        setPlayer(new Player());
+        player = new Player();
 
         //Setup firebase
         Firebase.setAndroidContext(this);
@@ -45,7 +47,7 @@ public class Assassin extends Application implements ValueEventListener {
             @Override
             public void onAuthenticated(AuthData authData) {
                 // Authenticated successfully with payload authData
-                getPlayer().setUid(authData.getUid());
+                player.setUid(authData.getUid());
                 Firebase playerRef = ref.child("players").child(authData.getUid());
                 mAuthenticateListener.onLoginSuccess();
             }
@@ -70,9 +72,8 @@ public class Assassin extends Application implements ValueEventListener {
                 // add player to firebase players list
                 //player.setUid(result.get("uid").toString());
                 ref.child("players").child(result.get("uid").toString()).child("email").setValue(email);
-                mAuthenticateListener.onSignUpSuccess(getPlayer().getUid());
+                mAuthenticateListener.onSignUpSuccess(player.getUid());
             }
-
             @Override
             public void onError(FirebaseError firebaseError) {
                 // there was an error
@@ -83,14 +84,14 @@ public class Assassin extends Application implements ValueEventListener {
     }
 
     public void login(String email, String password) {
-        getPlayer().setEmail(email);
+        player.setEmail(email);
         ref.authWithPassword(email, password, authResultHandler);
     }
 
     public void joinGroup(String groupName, String groupPassword) {
         this.groupRef = ref.child("groups").child(groupName);
         this.groupPassword = groupPassword;
-        getPlayer().setRef(this.groupRef);
+        player.setRef(this.groupRef);
         Log.v(TAG, "Join Group");
         // check that password is correct
         groupRef.addListenerForSingleValueEvent(this);
@@ -139,25 +140,7 @@ public class Assassin extends Application implements ValueEventListener {
         if(dataSnapshot.child("password").getValue().equals(groupPassword)) {
             // reference to list of players for current groupRef
             Firebase playersRef = groupRef.child("players");
-            playersRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for(DataSnapshot child : dataSnapshot.getChildren()) {
-                        //TODO: get players from firebase, add them to players array field
-                        String uid = child.child("uid").getValue().toString();
-                        String email = child.child("email").getValue().toString();
-                        Player player = new Player(uid, email, groupRef.getKey().toString());
-                        //Player player = new Player(uid, email, groupRef.getKey());
-                        //players.add(player);
-                    }
-                }
-
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
-            playersRef.child(this.getPlayer().getUid()).setValue(this.getPlayer());
+            playersRef.child(this.player.getUid()).setValue(this.player);
             mJoinGroupListener.onJoinGroupSuccess();
         } else {
             mJoinGroupListener.onJoinGroupError("Error: incorrect password");
@@ -167,10 +150,6 @@ public class Assassin extends Application implements ValueEventListener {
     @Override
     public void onCancelled(FirebaseError firebaseError) {
 
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     public interface OnAuthenticateListener {
@@ -189,38 +168,5 @@ public class Assassin extends Application implements ValueEventListener {
 
         void onJoinGroupError(String error);
     }
-
-
-    public Map<String, Player> getPlayerList(){
-        //query firebase for all players
-        groupRef.child("players").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //dataSnapshot.forEach(function(childSnaps)
-                for(DataSnapshot child: dataSnapshot.getChildren()){
-                    players.put(child.getKey(), new Player(
-                            child.child("uid").toString(),
-                            child.child("email").toString(),
-                            groupRef.getKey()
-                    ));
-                }
-                //for each through this
-                    //get each uid
-                    //add to list
-
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-
-        Log.v(TAG, "player list \n ============================================ \n" + players.toString() +"\n =============================================");
-
-        return players;
-    }
-
 
 }
