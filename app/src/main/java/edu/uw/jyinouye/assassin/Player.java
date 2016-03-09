@@ -23,6 +23,8 @@ public class Player {
     private String userName;
     private String groupName;
     private Location location;
+    private long latitude;
+    private long longitude;
     private long kills;
     private long deaths;
     private long currency;
@@ -107,19 +109,20 @@ public class Player {
         this.currency = currency;
     }
 
-    public Location getLocation() { return this.location; }
+    public long getLatitude() {
+        return latitude;
+    }
+
+    public long getLongitude() {
+        return longitude;
+    }
 
     public void setLocation(Location location) {
         Log.v("PlayerObject", "set location");
         Map<String, Object> loc = new HashMap<>();
-        loc.put("lat", location.getLatitude());
-        loc.put("lng", location.getLongitude());
-        groupRef.child("players").child(uid).child("location").updateChildren(loc);
-        this.location = location;
-    }
-
-    // For use to set location for other players without updating the database with old locations
-    public void setLocalLocation(Location location) {
+        loc.put("latitude", location.getLatitude());
+        loc.put("longitude", location.getLongitude());
+        groupRef.child("players").child(uid).updateChildren(loc);
         this.location = location;
     }
 

@@ -49,7 +49,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import edu.uw.jyinouye.assassin.fragments.ChatFragment;
@@ -392,9 +391,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.clear();
         Collection<Player> playersCopy = players.values();
         for(Player p : playersCopy) {
-            if(p.getLocation() != null && !p.getEmail().equals(player.getEmail())) {
+            if(!p.getEmail().equals(player.getEmail())) {
                 mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(p.getLocation().getLatitude(), p.getLocation().getLongitude()))
+                        .position(new LatLng(p.getLatitude(), p.getLongitude()))
                         .title(p.getEmail())
                 );
             }
@@ -408,46 +407,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Object uid = dataSnapshot.child("uid").toString();
-                if(uid == null) {
-                    return;
-                }
-                Player player = new Player(
-                        dataSnapshot.child("uid").getValue().toString(),
-                        dataSnapshot.child("email").getValue().toString(),
-                        groupRef.getKey()
-                );
-                player.setRef(groupRef);
-                player.setKills((long) dataSnapshot.child("kills").getValue());
-                player.setDeaths((long) dataSnapshot.child("deaths").getValue());
-                player.setCurrency((long) dataSnapshot.child("currency").getValue());
-                Location loc = new Location("");
-                Object lat = dataSnapshot.child("location").child("lat").getValue();
-                Object lng = dataSnapshot.child("location").child("lng").getValue();
-                if(lat != null && lng != null) {
-                    loc.setLatitude((double) lat);
-                    loc.setLongitude((double) lng);
-                    player.setLocalLocation(loc);
-                }
+                Player player = dataSnapshot.getValue(Player.class);
                 players.put(dataSnapshot.getKey(), player);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Player changedPlayer = players.get(dataSnapshot.getKey());
-                Location loc = new Location("");
-                Object lat = dataSnapshot.child("location").child("lat").getValue();
-                Object lng = dataSnapshot.child("location").child("lng").getValue();
-                if(lat != null && lng != null) {
-                    loc.setLatitude((double)lat);
-                    loc.setLongitude((double)lng);
-                    changedPlayer.setRef(groupRef);
-                    changedPlayer.setLocalLocation(loc);
-                }
-                changedPlayer.setKills((long) dataSnapshot.child("kills").getValue());
-                changedPlayer.setDeaths((long) dataSnapshot.child("deaths").getValue());
-                changedPlayer.setCurrency((long) dataSnapshot.child("currency").getValue());
-                players.put(dataSnapshot.getKey(), changedPlayer);
+                Player databasePlayer = dataSnapshot.getValue(Player.class);
+                players.put(dataSnapshot.getKey(), databasePlayer);
             }
 
             @Override

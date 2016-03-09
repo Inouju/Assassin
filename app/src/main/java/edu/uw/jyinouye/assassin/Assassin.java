@@ -1,20 +1,15 @@
 package edu.uw.jyinouye.assassin;
 
 import android.app.Application;
-import android.location.Location;
 import android.util.Log;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.MutableData;
-import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +19,7 @@ public class Assassin extends Application implements ValueEventListener {
 
     private static final String TAG = "Assassin";
     private static Assassin singleton;
-    private Player player;
+    private Player mPlayer;
     private String groupPassword;
     private Map<String, Player> players;
 
@@ -32,14 +27,14 @@ public class Assassin extends Application implements ValueEventListener {
     private Firebase groupRef;
     private Firebase.AuthResultHandler authResultHandler;
     private OnAuthenticateListener mAuthenticateListener;
-    private Firebase playerRef;
+    private Firebase globalPlayerRef;
     private OnJoinGroupListener mJoinGroupListener;
 
     @Override
     public void onCreate() {
         super.onCreate();
         singleton = this;
-        player = new Player();
+        mPlayer = new Player();
 
         //Setup firebase
         Firebase.setAndroidContext(this);
@@ -51,18 +46,19 @@ public class Assassin extends Application implements ValueEventListener {
             public void onAuthenticated(AuthData authData) {
                 // Authenticated successfully with payload authData
                 Log.v(TAG, "Authed with " + authData.getUid());
-                player.setUid(authData.getUid());
-                playerRef = ref.child("players").child(authData.getUid());
+                mPlayer.setUid(authData.getUid());
+                globalPlayerRef = ref.child("players").child(authData.getUid());
 
                 // get username
-                playerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                globalPlayerRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         Object userName = snapshot.child("user-name").getValue();
-                        if(userName != null) {
-                            player.setUserName(userName.toString());
+                        if (userName != null) {
+                            mPlayer.setUserName(userName.toString());
                         }
                     }
+
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
                     }
@@ -89,12 +85,16 @@ public class Assassin extends Application implements ValueEventListener {
             @Override
             public void onSuccess(Map<String, Object> result) {
                 Log.v(TAG, "Successfully created user account with uid: " + result.get("uid"));
-                // add player to firebase players list
-                //player.setUid(result.get("uid").toString());
-                ref.child("players").child(result.get("uid").toString()).child("email").setValue(email);
-                ref.child("players").child(result.get("uid").toString()).child("user-name").setValue(userName);
-                player.setUserName(userName);
-                mAuthenticateListener.onSignUpSuccess(player.getUid());
+                // add mPlayer to firebase players list
+                mPlayer.setUid(result.get("uid").toString());
+                mPlayer.setEmail(email);
+                mPlayer.setUserName(userName);
+
+                // adds to update global players here
+                ref.child("players").child(result.get("uid").toString()).child("email").setValue(mPlayer.getEmail());
+                ref.child("players").child(result.get("uid").toString()).child("userName").setValue(mPlayer.getUserName());
+
+                mAuthenticateListener.onSignUpSuccess(mPlayer.getUid());
             }
 
             @Override
@@ -107,14 +107,14 @@ public class Assassin extends Application implements ValueEventListener {
     }
 
     public void login(String email, String password) {
-        player.setEmail(email);
+        mPlayer.setEmail(email);
         ref.authWithPassword(email, password, authResultHandler);
     }
 
     public void joinGroup(String groupName, String groupPassword) {
         this.groupRef = ref.child("groups").child(groupName);
         this.groupPassword = groupPassword;
-        player.setRef(this.groupRef);
+        mPlayer.setRef(this.groupRef);
         Log.v(TAG, "Join Group");
         // check that password is correct
         groupRef.addListenerForSingleValueEvent(this);
@@ -132,8 +132,8 @@ public class Assassin extends Application implements ValueEventListener {
     }
 
     public void killPressed() {
-        player.incKill();
-        final Firebase playerkill = groupRef.child("players").child(player.getUid()).child("kills");
+        mPlayer.incKill();
+        final Firebase playerkill = groupRef.child("players").child(mPlayer.getUid()).child("kills");
         final int[] counter = {0};
         ValueEventListener listener = playerkill.addValueEventListener(new ValueEventListener() {
             @Override
@@ -150,7 +150,7 @@ public class Assassin extends Application implements ValueEventListener {
 
             }
         });
-        //playerkill.setValue(player.getKills());
+        //playerkill.setValue(mPlayer.getKills());
     }
 
     public Firebase getRef() {
@@ -158,7 +158,7 @@ public class Assassin extends Application implements ValueEventListener {
     }
 
     public Player getPlayer() {
-        return player;
+        return mPlayer;
     }
 
     public Firebase getGroup() {
@@ -185,15 +185,17 @@ public class Assassin extends Application implements ValueEventListener {
         if(dataSnapshot.child("password").getValue().equals(groupPassword)) {
             // reference to list of players for current groupRef
             Firebase playersRef = groupRef.child("players");
-            playersRef.child(this.player.getUid()).setValue(this.player);
+            playersRef.child(this.mPlayer.getUid()).setValue(this.mPlayer);
 
-            playersRef.child(this.player.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            playersRef.child(this.mPlayer.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
-                    Log.v(TAG, "Kills: " + snapshot.child("kills").getValue());
-                    player.setKills((long) snapshot.child("kills").getValue());
-                    player.setDeaths((long) snapshot.child("deaths").getValue());
-                    player.setCurrency((long) snapshot.child("currency").getValue());
+                    Player player = snapshot.getValue(Player.class);
+                    Log.v(TAG, "Kills: " + player.getKills());
+                    mPlayer.setKills(player.getKills());
+                    mPlayer.setDeaths(player.getDeaths());
+                    mPlayer.setCurrency(player.getCurrency());
+                    mPlayer.setUserName(player.getUserName());
                 }
 
                 @Override
