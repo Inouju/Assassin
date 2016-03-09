@@ -50,7 +50,7 @@ public class ChatFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         Assassin assassin = (Assassin) getActivity().getApplication();
-        mUserName = assassin.getPlayer().getEmail();
+        mUserName = assassin.getPlayer().getUserName();
         mGroup = assassin.getGroup();
         mGroupChat = mGroup.child("chat");
     }
@@ -100,7 +100,6 @@ public class ChatFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
         // Tell our list adapter that we only want 50 messages at a time
         mChatListAdapter = new ChatListAdapter(mGroupChat.limitToLast(50), getActivity(), R.layout.content_chat, mUserName);
         mListView.setAdapter(mChatListAdapter);
@@ -111,7 +110,6 @@ public class ChatFragment extends Fragment {
                 mListView.setSelection(mChatListAdapter.getCount() - 1);
             }
         });
-
     }
 
     @Override

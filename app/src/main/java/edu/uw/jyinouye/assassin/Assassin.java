@@ -77,6 +77,7 @@ public class Assassin extends Application implements ValueEventListener {
                 //player.setUid(result.get("uid").toString());
                 ref.child("players").child(result.get("uid").toString()).child("email").setValue(email);
                 ref.child("players").child(result.get("uid").toString()).child("user-name").setValue(userName);
+                player.setUserName(userName);
                 mAuthenticateListener.onSignUpSuccess(player.getUid());
             }
 

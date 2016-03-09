@@ -26,6 +26,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         bundle.putInt("deaths", player.getDeaths());
         bundle.putInt("currency", player.getCurrency());
         bundle.putString("name", player.getEmail());
+        //bundle.putString("username", player.getUserName());
         mProfileFragment = new ProfileFragment();
         mProfileFragment.setArguments(bundle);
 
@@ -239,6 +241,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //OnClickListener for profile section
         View headerView = nvDrawer.inflateHeaderView(R.layout.nav_drawer_header);
+        TextView profile_name = (TextView) headerView.findViewById(R.id.profile_name_text);
+        //profile_name.setText(assassin.getPlayer().getUserName());
+        profile_name.setText("Username not displaying (is null)");
+        TextView profile_email = (TextView) headerView.findViewById(R.id.profile_email_text);
+        profile_email.setText(assassin.getPlayer().getEmail());
+
         View profileView = headerView.findViewById(R.id.chosen_account_content_view);
         profileView.setOnClickListener(new View.OnClickListener() {
             @Override
