@@ -58,6 +58,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     // UI references.
     private AutoCompleteTextView mEmailView;
+    private EditText mUserNameView;
     private EditText mPasswordView;
     private EditText mPasswordConfirmView;
     private View mProgressView;
@@ -78,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+        mUserNameView = (EditText) findViewById(R.id.user_name_field);
 
         mPasswordView = (EditText) findViewById(R.id.user_password);
         mPasswordConfirmView = (EditText) findViewById(R.id.confirm_user_password);
@@ -121,11 +123,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mSignUpButton.setText(R.string.toggle_sign_up);
             mSignInButton.setText(R.string.action_sign_in);
             mConfirmUserPass.setVisibility(View.GONE);
+            mUserNameView.setVisibility(View.GONE);
             toggleSignUp = false;
         } else {
             mSignUpButton.setText(R.string.toggle_sign_in);
             mSignInButton.setText(R.string.action_sign_up);
             mConfirmUserPass.setVisibility(View.VISIBLE);
+            mUserNameView.setVisibility(View.VISIBLE);
             toggleSignUp = true;
         }
     }
@@ -192,6 +196,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String userName = mUserNameView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -232,7 +237,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(email, password, userName);
             mAuthTask.execute();
         }
     }
@@ -338,7 +343,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void startJoinGroupActivity() {
-        startActivity(new Intent(this, JoinGroupActivity.class));
+        Intent intent = new Intent(this, JoinGroupActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -349,12 +355,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private final String mUserName;
         private final Assassin assassin;
         private boolean success;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, String userName) {
             mEmail = email;
             mPassword = password;
+            mUserName = userName;
             assassin = ((Assassin)getApplicationContext()).getInstance();
         }
 
@@ -365,7 +373,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             // sign up user
             if(toggleSignUp) {
-                assassin.signup(mEmail, mPassword);
+                assassin.signup(mEmail, mPassword, mUserName);
             } else {
                 assassin.login(mEmail, mPassword);
             }

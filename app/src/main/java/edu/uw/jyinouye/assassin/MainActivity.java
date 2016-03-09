@@ -1,6 +1,7 @@
 package edu.uw.jyinouye.assassin;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -43,7 +44,9 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.uw.jyinouye.assassin.fragments.ChatFragment;
@@ -330,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             requestPermission();
         }
+        getPlayerList();
     }
 
     // Handles conversion between Location and LatLng
@@ -362,16 +366,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onLocationChanged(Location location) {
         player.setLocation(location);
         updatePlayerMarkers();
-        Log.v(TAG, "Location:" + location.getLatitude() + ", " + location.getLongitude());
     }
 
     private void updatePlayerMarkers() {
-        for(Player p : players.values()) {
+        Collection<Player> playersCopy = players.values();
+        for(Player p : playersCopy) {
             mMap.clear();
-            mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(p.getLocation().getLatitude(), p.getLocation().getLongitude()))
-                            .title(p.getEmail())
-            );
+            if(p.getLocation() != null) {
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(p.getLocation().getLatitude(), p.getLocation().getLongitude()))
+                        .title(p.getEmail())
+                );
+            }
         }
     }
 
@@ -389,12 +395,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             groupRef.getKey()
                     );
                     Location loc = new Location("");
-                    loc.setLatitude((double)child.child("location").child("lat").getValue());
-                    loc.setLongitude((double)child.child("location").child("lng").getValue());
-                    player.setLocation(loc);
+                    Object lat = child.child("location").child("lat").getValue();
+                    Object lng = child.child("location").child("lng").getValue();
+                    if(lat != null && lng != null) {
+                        loc.setLatitude((double)lat);
+                        loc.setLongitude((double)lng);
+                        player.setRef(groupRef);
+                        player.setLocation(loc);
+                    }
                     players.put(child.getKey(), player);
+                    Log.v(TAG, child.getValue().toString());
                 }
-                updatePlayerMarkers();
             }
 
             @Override
@@ -407,27 +418,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return players;
     }
-
-
-
-    //            playersRef.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    for(DataSnapshot child : dataSnapshot.getChildren()) {
-//                        //TODO: get players from firebase, add them to players array field
-//                        String uid = child.child("uid").getValue().toString();
-//                        String email = child.child("email").getValue().toString();
-//
-//                        Player player = new Player(uid, email, groupRef.getKey());
-//                        //players.add(player);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(FirebaseError firebaseError) {
-//
-//                }
-//            });
 
     @Override
     public void onConnected(Bundle bundle) {
