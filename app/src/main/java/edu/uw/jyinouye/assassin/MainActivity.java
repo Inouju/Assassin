@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LeaderboardFragment mLeaderboardFragment;
     private ProfileFragment mProfileFragment;
     private ShopFragment mShopFragment;
+    //private ProfileFragment fragInfo;
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -133,7 +134,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Setup initial state where all but mapfragment is hidden
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("kills", player.getKills());
+        bundle.putInt("deaths", player.getDeaths());
+        bundle.putInt("currency", player.getCurrency());
+        bundle.putString("name", player.getEmail());
+        mProfileFragment = new ProfileFragment();
+        mProfileFragment.setArguments(bundle);
+
+        fragmentManager
+        .beginTransaction()
                 .add(R.id.flContent, mMapFragment)
                 .add(R.id.flContent, mChatFragment)
                 .add(R.id.flContent, mLeaderboardFragment)
@@ -279,13 +290,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mProfileFragment)
                         .hide(mMapFragment);
                 break;
-//            case R.id.nav_profile_fragment:
-//                ft.show(mProfileFragment)
-//                        .hide(mChatFragment)
-//                        .hide(mLeaderboardFragment)
-//                        .hide(mMapFragment)
-//                        .hide(mShopFragment);
-//                break;
+            case R.id.nav_profile_fragment:
+                ft.show(mProfileFragment)
+                        .hide(mChatFragment)
+                        .hide(mLeaderboardFragment)
+                        .hide(mMapFragment)
+                        .hide(mShopFragment);
+                break;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
