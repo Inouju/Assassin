@@ -139,16 +139,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Setup initial state where all but mapfragment is hidden
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        Bundle bundle = new Bundle();
-        bundle.putInt("kills", player.getKills());
-        bundle.putInt("deaths", player.getDeaths());
-        bundle.putInt("currency", player.getCurrency());
-        bundle.putString("name", player.getEmail());
-        //bundle.putString("username", player.getUserName());
-        bundle.putString("targetuid", player.getTargetuid());
-
         mProfileFragment = new ProfileFragment();
-        mProfileFragment.setArguments(bundle);
 
         fragmentManager
         .beginTransaction()
@@ -247,8 +238,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //OnClickListener for profile section
         View headerView = nvDrawer.inflateHeaderView(R.layout.nav_drawer_header);
         TextView profile_name = (TextView) headerView.findViewById(R.id.profile_name_text);
-        //profile_name.setText(assassin.getPlayer().getUserName());
-        profile_name.setText("Username not displaying (is null)");
+        String username = assassin.getPlayer().getUserName();
+        if(username != null) {
+            profile_name.setText(username);
+        } else {
+            profile_name.setText("Username not set :(");
+        }
         TextView profile_email = (TextView) headerView.findViewById(R.id.profile_email_text);
         profile_email.setText(assassin.getPlayer().getEmail());
 
@@ -349,6 +344,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.clear();
 
         // Set map ui elements
         UiSettings mapUiSettings = mMap.getUiSettings();
@@ -362,7 +358,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(47.6097, -122.3331)));
             mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
-            updatePlayerMarkers();
         } else {
             requestPermission();
         }

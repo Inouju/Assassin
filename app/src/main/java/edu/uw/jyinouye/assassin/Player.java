@@ -23,9 +23,9 @@ public class Player {
     private String userName;
     private String groupName;
     private Location location;
-    private int kills;
-    private int deaths;
-    private int currency;
+    private long kills;
+    private long deaths;
+    private long currency;
 
     private OnPlayerUpdatedListener mPlayerUpdatedListener;
 
@@ -53,11 +53,11 @@ public class Player {
 
     public void incDeath() { deaths = deaths + 1; }
 
-    public int getCurrency() { return currency; }
+    public long getCurrency() { return currency; }
 
-    public int getKills() { return kills; }
+    public long getKills() { return kills; }
 
-    public int getDeaths() { return deaths; }
+    public long getDeaths() { return deaths; }
 
     public String getUid() { return uid; }
 
@@ -93,6 +93,18 @@ public class Player {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public void setKills(long kills) {
+        this.kills = kills;
+    }
+
+    public void setDeaths(long deaths) {
+        this.deaths = deaths;
+    }
+
+    public void setCurrency(long currency) {
+        this.currency = currency;
     }
 
     public Location getLocation() { return this.location; }

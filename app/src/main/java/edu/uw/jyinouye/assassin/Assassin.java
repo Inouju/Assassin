@@ -53,6 +53,21 @@ public class Assassin extends Application implements ValueEventListener {
                 Log.v(TAG, "Authed with " + authData.getUid());
                 player.setUid(authData.getUid());
                 playerRef = ref.child("players").child(authData.getUid());
+
+                // get username
+                playerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        Object userName = snapshot.child("user-name").getValue();
+                        if(userName != null) {
+                            player.setUserName(userName.toString());
+                        }
+                    }
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                    }
+                });
+
                 mAuthenticateListener.onLoginSuccess();
             }
             @Override
@@ -171,6 +186,21 @@ public class Assassin extends Application implements ValueEventListener {
             // reference to list of players for current groupRef
             Firebase playersRef = groupRef.child("players");
             playersRef.child(this.player.getUid()).setValue(this.player);
+
+            playersRef.child(this.player.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    Log.v(TAG, "Kills: " + snapshot.child("kills").getValue());
+                    player.setKills((long) snapshot.child("kills").getValue());
+                    player.setDeaths((long) snapshot.child("deaths").getValue());
+                    player.setCurrency((long) snapshot.child("currency").getValue());
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                }
+            });
+
             mJoinGroupListener.onJoinGroupSuccess();
         } else {
             mJoinGroupListener.onJoinGroupError("Error: incorrect password");
