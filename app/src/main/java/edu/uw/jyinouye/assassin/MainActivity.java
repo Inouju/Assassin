@@ -217,15 +217,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
-        switch (item.getItemId()) {
-            case R.id.admin_start_game:
-                startGame();
-                return true;
+        Log.v(TAG, "The player's admin status = " + player.getAdmin() );
+        if(player.getAdmin()) {
+            item.setEnabled(true);
+            switch (item.getItemId()) {
+                case R.id.admin_start_game:
+                    startGame();
+                    return true;
+            }
+            return super.onOptionsItemSelected(item);
+        } else {
+            item.setEnabled(false);
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -290,13 +299,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    //gives access to a left side drawr menu
+    //sets profile avatar
     public void setProfileImage(View headerView) {
-        Log.v(TAG, "COW");
-
         int selectedAvator = assassin.getPlayer().getAvator();
         ImageView profile_image = (ImageView) headerView.findViewById(R.id.profile_image);
-
         Log.v(TAG, "selectedAvator: " + selectedAvator);
 
         //allows user to select their avatar
@@ -339,36 +345,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
                         .hide(mLeaderboardFragment)
-                        .hide(mProfileFragment)
-                        .hide(mShopFragment);
+                        .hide(mProfileFragment);
                 killButton.setVisibility(View.VISIBLE);
                 break;
             case R.id.nav_chat_fragment:
                 ft.show(mChatFragment)
                         .hide(mMapFragment)
                         .hide(mLeaderboardFragment)
-                        .hide(mProfileFragment)
-                        .hide(mShopFragment);
+                        .hide(mProfileFragment);
+                killButton.setVisibility(View.GONE);
+                break;
+            case R.id.nav_profile_fragment:
+                ft.show(mProfileFragment)
+                        .hide(mMapFragment)
+                        .hide(mLeaderboardFragment)
+                        .hide(mProfileFragment);
                 killButton.setVisibility(View.GONE);
                 break;
             case R.id.nav_leaderboard_fragment:
                 ft.show(mLeaderboardFragment)
                         .hide(mChatFragment)
                         .hide(mMapFragment)
-                        .hide(mProfileFragment)
-                        .hide(mShopFragment);
+                        .hide(mProfileFragment);
                 killButton.setVisibility(View.GONE);
                 break;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
                         .hide(mLeaderboardFragment)
-                        .hide(mProfileFragment)
-                        .hide(mShopFragment);
+                        .hide(mProfileFragment);
                 killButton.setVisibility(View.GONE);
                 break;
         }
-
         ft.commit();
 
         // Highlight the selected item, update the title, and close the drawer

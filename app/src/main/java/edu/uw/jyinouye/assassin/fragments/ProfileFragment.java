@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import edu.uw.jyinouye.assassin.Assassin;
@@ -21,6 +22,7 @@ public class ProfileFragment extends Fragment {
 
 
     private static final String TAG = "ProfileFragment";
+    private Player player;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -28,9 +30,7 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -40,13 +40,14 @@ public class ProfileFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         Assassin assassin = (Assassin)getActivity().getApplication();
-        Player player = assassin.getPlayer();
+        player = assassin.getPlayer();
 
         //get all of the textViews
         TextView name = (TextView) rootView.findViewById(R.id.profile_name);
         TextView kills = (TextView) rootView.findViewById(R.id.profile_kills);
         TextView deaths = (TextView) rootView.findViewById(R.id.profile_deaths);
         TextView currency = (TextView) rootView.findViewById(R.id.profile_currency);
+        setProfileImage(rootView);
 
         //set all of the textViews
         name.setText(player.getUserName());
@@ -56,6 +57,30 @@ public class ProfileFragment extends Fragment {
 
         return rootView;
     }
+
+    //sets profile avatar
+    public void setProfileImage(View rootView) {
+        int selectedAvator = player.getAvator();
+        ImageView profile_image = (ImageView) rootView.findViewById(R.id.profile_image);
+        if (selectedAvator == 1) {
+            profile_image.setImageResource(R.drawable.avator1);
+        } else if (selectedAvator == 2) {
+            profile_image.setImageResource(R.drawable.avator2);
+        } else if (selectedAvator == 3) {
+            profile_image.setImageResource(R.drawable.avator3);
+        } else if (selectedAvator == 4) {
+            profile_image.setImageResource(R.drawable.avator4);
+        } else if (selectedAvator == 5) {
+            profile_image.setImageResource(R.drawable.avator5);
+        } else if (selectedAvator == 6) {
+            profile_image.setImageResource(R.drawable.avator6);
+        } else if (selectedAvator == 7) {
+            profile_image.setImageResource(R.drawable.avator7);
+        } else if (selectedAvator == 8) {
+            profile_image.setImageResource(R.drawable.avator8);
+        }
+    }
+
 
     @Override
     public void onAttach(Context context) {
