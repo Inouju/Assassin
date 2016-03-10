@@ -43,7 +43,7 @@ public class Player {
         this.deaths = 0;
         this.currency = 0;
         this.targetuid = "YOU!";
-        this.isPlaying = false;
+        this.isPlaying = true;
     }
 
     public void setRef(Firebase ref) {

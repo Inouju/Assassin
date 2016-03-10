@@ -489,11 +489,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStop() {
         super.onStop();
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        assassin.getGroup().child("players").child(player.getUid()).child("isPlaying").setValue(false);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        assassin.getGroup().child("players").child(player.getUid()).child("isPlaying").setValue(true);
         if (mGoogleApiClient.isConnected()) {
             startLocationUpdates();
         }
