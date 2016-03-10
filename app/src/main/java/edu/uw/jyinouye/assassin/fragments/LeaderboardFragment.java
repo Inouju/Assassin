@@ -44,7 +44,6 @@ public class LeaderboardFragment extends Fragment {
     private ArrayAdapter LeaderboardAdapter;
     private List<Ranking> rankings;
     //private ChatListAdapter mChatListAdapter;
-    private OnFragmentInteractionListener mListener;
 
     public LeaderboardFragment() {
         // Required empty public constructor
@@ -94,10 +93,7 @@ public class LeaderboardFragment extends Fragment {
 
         LeaderboardAdapter = new ArrayAdapter(getActivity(), R.layout.list_item,R.id.txtItem);
         listView.setAdapter(LeaderboardAdapter);
-        Collections.sort(rankings);
-        for(int i = 0;i < rankings.size();i++) {
-            LeaderboardAdapter.insert(rankings.get(i),0);
-        }
+        refresh();
     }
 
     @Override
@@ -108,12 +104,6 @@ public class LeaderboardFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -124,5 +114,30 @@ public class LeaderboardFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void refresh() {
+        rankings.clear();
+        mPlayers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot dater : dataSnapshot.getChildren()) {
+                    String email = dater.child("email").getValue(String.class);
+                    int kills = dater.child("kills").getValue(Integer.class);
+                    String username = dater.child("username").getValue(String.class);
+                    Ranking rank = new Ranking(email, username, kills);
+                    rankings.add(rank);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+        Collections.sort(rankings);
+        for(int i = 0;i < rankings.size();i++) {
+            LeaderboardAdapter.insert(rankings.get(i),0);
+        }
     }
 }

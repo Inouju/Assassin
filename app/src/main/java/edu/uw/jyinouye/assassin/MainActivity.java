@@ -180,7 +180,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         killButton = (Button) findViewById(R.id.kill_button);
         killButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                assassin.killPressed();
+                boolean result = assassin.killPressed();
+                if(result) {
+                    mLeaderboardFragment.refresh();
+                }
                 Log.v("hi", assassin.getPlayer().getKills()+"");
             }
         });
