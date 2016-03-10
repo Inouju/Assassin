@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ActionBarDrawerToggle mDrawerToggle;
     private MenuItem mLastMenuItem;
     private Button killButton;
+    private boolean winnerFlag;
 
     private SupportMapFragment mMapFragment;
     private ChatFragment mChatFragment;
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         player = assassin.getPlayer();
         Log.v(TAG, "Player email: " + player.getEmail());
         players = new HashMap<>();
+        winnerFlag = true;
 
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -521,7 +523,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     }
                 }
-                if(player.getTargetuid().equals(player.getUid())) {
+                if(winnerFlag && player.getTargetuid().equals(player.getUid())) {
+                    winnerFlag = false;
                     AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                             .setTitle("You are the winner!")
                             .setMessage("Congratulation")
