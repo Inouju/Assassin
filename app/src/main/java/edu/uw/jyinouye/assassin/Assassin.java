@@ -138,6 +138,7 @@ public class Assassin extends Application implements ValueEventListener {
         final Location l = new Location("");
         l.setLatitude(mPlayer.getLatitude());
         l.setLongitude(mPlayer.getLongitude());
+        Log.v("LOCATION",mPlayer.getLatitude()+" "+mPlayer.getLongitude());
         if(mPlayer.getTargetuid() != null) {
             final Firebase target = groupRef.child("players").child(mPlayer.getTargetuid());
             final int[] counter2 = {0};
