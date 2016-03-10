@@ -24,6 +24,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ActionBarDrawerToggle mDrawerToggle;
     private MenuItem mLastMenuItem;
     private Button killButton;
+    private boolean winnerFlag;
 
     private SupportMapFragment mMapFragment;
     private ChatFragment mChatFragment;
@@ -106,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         player = assassin.getPlayer();
         Log.v(TAG, "Player email: " + player.getEmail());
         players = new HashMap<>();
+        winnerFlag = true;
 
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -205,14 +209,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
         switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawer.openDrawer(GravityCompat.START);
+            case R.id.admin_start_game:
+                startGame();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -344,18 +354,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mShopFragment);
                 killButton.setVisibility(View.GONE);
                 break;
-            case R.id.nav_shop_fragment:
-                ft.show(mShopFragment)
-                        .hide(mChatFragment)
-                        .hide(mLeaderboardFragment)
-                        .hide(mProfileFragment)
-                        .hide(mMapFragment);
-                killButton.setVisibility(View.GONE);
-                break;
-            case R.id.admin_start_game:
-                startGame();
-                mDrawer.closeDrawers();
-                return;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
@@ -434,9 +432,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-        player.setLocation(location);
-        mLastLocation = location;
-        updatePlayerMarkers();
+        if(!player.getIsDead() && player.getIsPlaying()) {
+            player.setLocation(location);
+            mLastLocation = location;
+            updatePlayerMarkers();
+        }
     }
 
     private void startGame() {
@@ -509,23 +509,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Player player = dataSnapshot.getValue(Player.class);
-                player.setLatitude((double)dataSnapshot.child("latitude").getValue());
-                player.setLongitude((double)dataSnapshot.child("longitude").getValue());
+                Object lat = dataSnapshot.child("latitude").getValue();
+                Object lng = dataSnapshot.child("longitude").getValue();
+                if (lat != null && lng != null) {
+                    player.setLatitude((double) lat);
+                    player.setLongitude((double) lng);
+                }
                 players.put(dataSnapshot.getKey(), player);
             }
 
             @Override
             public void onChildChanged(final DataSnapshot dataSnapshot, String s) {
                 Player databasePlayer = dataSnapshot.getValue(Player.class);
-                Log.v(TAG, "databaseplayer lat: " + dataSnapshot.child("latitude").getValue());
-                Log.v(TAG, "databaseplayer lng:" + dataSnapshot.child("longitude").getValue());
-                databasePlayer.setLatitude((double) dataSnapshot.child("latitude").getValue());
-                databasePlayer.setLongitude((double) dataSnapshot.child("longitude").getValue());
-                databasePlayer.setTargetuid(databasePlayer.getTargetuid());
-                players.put(dataSnapshot.getKey(), databasePlayer);
-                if(databasePlayer.getUid().equals(player.getUid())) {
+                Object lat = dataSnapshot.child("latitude").getValue();
+                Object lng = dataSnapshot.child("longitude").getValue();
+                if (lat != null && lng != null) {
+                    databasePlayer.setLatitude((double) lat);
+                    databasePlayer.setLongitude((double) lng);
+                    databasePlayer.setTargetuid(databasePlayer.getTargetuid());
+                    players.put(dataSnapshot.getKey(), databasePlayer);
+                }
+                // if changed player is you
+                if(databasePlayer != null && databasePlayer.getUid().equals(player.getUid())) {
                     player.setTargetuid(databasePlayer.getTargetuid());
+                    // if player is dead
                     if(databasePlayer.getIsDead()) {
+                        dataSnapshot.getRef().child("isDead").setValue(true);
+                        player.setIsDead(true);
+                        dataSnapshot.getRef().setValue(null);
                         AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                                 .setTitle("You were killed!")
                                 .setMessage("DEAD")
@@ -538,11 +549,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 })
                                 .create();
                         dialog.show();
-                        Log.v(TAG, dialog.toString());
 
                     }
                 }
-                if(player.getTargetuid().equals(player.getUid())) {
+
+            }
+
+            @Override
+            public void onChildRemoved(final DataSnapshot dataSnapshot) {
+                players.remove(dataSnapshot.getKey());
+                Log.v(TAG, "Target: " + player.getTargetuid());
+                // check if player is last remaining
+                if(winnerFlag && player.getTargetuid().equals(player.getUid())) {
+                    winnerFlag = false;
                     AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                             .setTitle("You are the winner!")
                             .setMessage("Congratulation")
@@ -557,11 +576,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     dialog.show();
                     Log.v(TAG, dialog.toString());
                 }
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                players.remove(dataSnapshot.getKey());
 
             }
 
@@ -624,7 +638,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStop() {
         super.onStop();
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        assassin.getGroup().child("players").child(player.getUid()).child("isPlaying").setValue(false);
+        //assassin.getGroup().child("players").child(player.getUid()).child("isPlaying").setValue(false);
     }
 
     @Override

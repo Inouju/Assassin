@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <group android:checkableBehavior="single">
+
     <item
         android:id="@+id/nav_map_fragment"
         android:icon="@drawable/ic_nav_maps"
@@ -15,17 +17,9 @@
         android:id="@+id/nav_leaderboard_fragment"
         android:icon="@drawable/ic_nav_leaderboards"
         android:title="@string/nav_leaderboard_fragment" />
-    <item
-        android:id="@+id/nav_shop_fragment"
-        android:icon="@drawable/ic_nav_shop"
-        android:title="@string/nav_shop_fragment" />
-    <item
-        android:id="@+id/admin_start_game"
-        android:icon="@drawable/ic_start_game"
-        android:title="@string/admin_start_game" />
-    <!--<item-->
-        <!--android:id="@+id/nav_profile_fragment"-->
-        <!--android:icon="@drawable/ic_nav_profile"-->
-        <!--android:title="@string/nav_profile_fragment" />-->
+
 </group>
+
+
+
 </menu>

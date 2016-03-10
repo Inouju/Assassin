@@ -14,6 +14,8 @@ import com.firebase.client.snapshot.BooleanNode;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.uw.jyinouye.assassin.util.Ranking;
+
 /**
  * Application class that contains global state for login and auth stuff
  */
@@ -94,8 +96,10 @@ public class Assassin extends Application implements ValueEventListener {
                 mPlayer.setAvator(avator);
 
                 // adds to update global players here
-                ref.child("players").child(result.get("uid").toString()).child("email").setValue(mPlayer.getEmail());
-                ref.child("players").child(result.get("uid").toString()).child("userName").setValue(mPlayer.getUserName());
+                Ranking newRank = new Ranking(mPlayer.getEmail(), mPlayer.getUserName(), mPlayer.getKills());
+                ref.child("players").child(result.get("uid").toString()).setValue(newRank);
+//                ref.child("players").child(result.get("uid").toString()).child("userName").setValue(mPlayer.getUserName());
+//                ref.child("players").child(result.get("uid").toString()).child("kills").setValue(mPlayer.getKills());
 
                 mAuthenticateListener.onSignUpSuccess(mPlayer.getUid());
             }
@@ -146,51 +150,14 @@ public class Assassin extends Application implements ValueEventListener {
         if(mPlayer.getTargetuid() != null) {
             final Firebase target = groupRef.child("players").child(mPlayer.getTargetuid());
             target.child("isDead").setValue(true);
-            final int[] counter2 = {0};
-            ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
             target.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     mPlayer.setTargetuid(dataSnapshot.getValue(Player.class).getTargetuid());
                     Log.v(TAG, "New target: " + mPlayer.getTargetuid());
-                }
 
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
-            //final int[] counter2 = {0};
-//            ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    if (counter2[0] < 1) {
-                        if (dataSnapshot.hasChild("isPlaying") && dataSnapshot.child("isPlaying").getValue(Boolean.class)) {
-                                final Integer value2 = (int) (long) dataSnapshot.child("deaths").getValue();
-                                mPlayer.incKill();
-                                final int[] counter = {0};
-                                final Firebase playerkill = ref.child("players").child(mPlayer.getUid()).child("kills");
-                                playerkill.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot2) {
-                                        if (counter[0] < 1) {
-                                            Integer value = dataSnapshot2.getValue(Integer.class);
-                                            counter[0]++;
-                                            playerkill.setValue(value + 1);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(FirebaseError firebaseError) {
-
-                                    }
-                                });
-                        }
-                        counter2[0]++;
-                    }
+                    mPlayer.incKill();
+                    ref.child("players").child(mPlayer.getUid()).child("kills").setValue(mPlayer.getKills());
                 }
 
                 @Override
