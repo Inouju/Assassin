@@ -121,10 +121,13 @@ public class Assassin extends Application implements ValueEventListener {
         this.groupPassword = groupPassword;
         mPlayer.setRef(this.groupRef);
         mPlayer.setisPlaying(true);
+        mPlayer.setAdmin(false);
         mPlayer.setTargetuid("TEST TARGET UID");
         Log.v(TAG, "Join Group");
         // check that password is correct
         groupRef.addListenerForSingleValueEvent(this);
+
+
     }
 
     public void createGroup(String groupName, String groupPassword) {
@@ -136,6 +139,7 @@ public class Assassin extends Application implements ValueEventListener {
         groupDetails.put("players", players);
         group.put(groupName, groupDetails);
         ref.child("groups").updateChildren(group);
+        this.mPlayer.setAdmin(true);
     }
 
     public void killPressed() {
@@ -149,14 +153,30 @@ public class Assassin extends Application implements ValueEventListener {
             ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+            target.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    mPlayer.setTargetuid(dataSnapshot.getValue(Player.class).getTargetuid());
+                    Log.v(TAG, "New target: " + mPlayer.getTargetuid());
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+            //final int[] counter2 = {0};
+//            ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
 
                     if (counter2[0] < 1) {
                         if (dataSnapshot.hasChild("isPlaying") && (Boolean) dataSnapshot.child("isPlaying").getValue() == true) {
                                 final Integer value2 = (int) (long) dataSnapshot.child("deaths").getValue();
                                 mPlayer.incKill();
                                 final int[] counter = {0};
-                                final Firebase playerkill = groupRef.child("players").child(mPlayer.getUid()).child("kills");
-                                ValueEventListener listener = playerkill.addValueEventListener(new ValueEventListener() {
+                                final Firebase playerkill = ref.child("players").child(mPlayer.getUid()).child("kills");
+                                playerkill.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot2) {
                                         if (counter[0] < 1) {
@@ -209,15 +229,61 @@ public class Assassin extends Application implements ValueEventListener {
         ref.child("groups").addValueEventListener(mListener);
     }
 
+    /*
+    //gets the user
+    final Firebase target = groupRef.child("players").child(mPlayer.getUid());
+    target.addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if(dataSnapshot.getChildrenCount() == 1){
+                Log.v(TAG, "THERES SOMEONE HERE!@!!!@@@KJ@LJ@LJH@KG@KGH@JKLH@LKJH@LKJH@KLJH@LKJ@HKLH@KLJH@KLJH@KLH@KLJH@KLH@");
+            } else {
+                Log.v(TAG,"OH SHITTTTTT GFUCK MY AAAAAAAARSE");
+            }
+        }
+
+        @Override
+        public void onCancelled(FirebaseError firebaseError) {
+
+        }
+    });
+    */
+
     // callback when data in groupRef object gets changed
     @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
+    public void onDataChange(final DataSnapshot dataSnapshot) {
         Log.v(TAG, "Group data change: " + dataSnapshot.getValue());
         // user provides correct credentials
         if(dataSnapshot.child("password").getValue().equals(groupPassword)) {
             // reference to list of players for current groupRef
-            Firebase playersRef = groupRef.child("players");
+            final Firebase playersRef = groupRef.child("players");
             playersRef.child(this.mPlayer.getUid()).setValue(this.mPlayer);
+
+//            playersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+//                        Player newPlayer = postSnapshot.getValue(Player.class);
+//                        Log.v(TAG, String.valueOf(dataSnapshot.getChildrenCount()));
+//                        if (dataSnapshot.getChildrenCount() == 1 || newPlayer.getAdmin()) {
+//                            Log.v(TAG, "THERES SOMEONE HERE!@!!!@@@KJ@LJ@LJH@KG@KGH@JKLH@LKJH@LKJH@KLJH@LKJ@HKLH@KLJH@KLJH@KLH@KLJH@KLH@");
+//                            if(newPlayer.getUid().equals(mPlayer.getUid())) {
+//                                mPlayer.setAdmin(true);
+//                                playersRef.child(newPlayer.getUid()).child("admin").setValue(true);
+//                            }
+//
+//                        } //else {
+//                            //Log.v(TAG, "OH SHITTTTTT GFUCK MY AAAAAAAARSE");
+//                            //newPlayer.setAdmin(false);
+//                        //}
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(FirebaseError firebaseError) {
+//
+//                }
+//            });
 
             playersRef.child(this.mPlayer.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -225,11 +291,12 @@ public class Assassin extends Application implements ValueEventListener {
                     Player player = snapshot.getValue(Player.class);
                     Log.v(TAG, "Kills: " + player.getKills());
                     mPlayer.setKills(player.getKills());
-                    mPlayer.setDeaths(player.getDeaths());
-                    mPlayer.setCurrency(player.getCurrency());
-                    mPlayer.setUserName(player.getUserName());
+                        mPlayer.setDeaths(player.getDeaths());
+                        mPlayer.setCurrency(player.getCurrency());
+                        mPlayer.setUserName(player.getUserName());
+                    mPlayer.setAdmin(player.getAdmin());
                     mPlayer.setisPlaying(true);
-                    mPlayer.setAdmin(false);
+
                 }
 
                 @Override

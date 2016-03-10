@@ -98,9 +98,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        ImageView overlay = (ImageView)findViewById(R.id.main_overlay);
-        overlay.setBackgroundColor(Color.argb(127, 213, 0, 0));
-        overlay.setVisibility(View.GONE);
+        //ImageView overlay = (ImageView)findViewById(R.id.main_overlay);
+        //overlay.setBackgroundColor(Color.argb(127, 213, 0, 0));
+        //overlay.setVisibility(View.GONE);
 
         assassin = ((Assassin)getApplicationContext()).getInstance();
         player = assassin.getPlayer();
@@ -325,7 +325,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case R.id.admin_start_game:
                 startGame();
-                break;
+                mDrawer.closeDrawers();
+                return;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
@@ -427,6 +428,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v(TAG, "Last player in chain: " + players.get(players.size() - 1).getEmail());
     }
 
+    private void stopGame() {
+        mMap.clear();
+    }
+
     private void updatePlayerMarkers() {
         mMap.clear();
         Collection<Player> playersCopy = players.values();
@@ -481,7 +486,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            public void onChildChanged(final DataSnapshot dataSnapshot, String s) {
                 Player databasePlayer = dataSnapshot.getValue(Player.class);
                 Log.v(TAG, "databaseplayer lat: " + dataSnapshot.child("latitude").getValue());
                 Log.v(TAG, "databaseplayer lng:" + dataSnapshot.child("longitude").getValue());
@@ -492,20 +497,36 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if(databasePlayer.getUid().equals(player.getUid())) {
                     player.setTargetuid(databasePlayer.getTargetuid());
                     if(databasePlayer.getIsDead()) {
-                        Log.v(TAG, "DEAD!!!!");
-                        Toast.makeText(MainActivity.this, "You ded", Toast.LENGTH_LONG).show();
-                        new AlertDialog.Builder(MainActivity.this)
+                        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                                 .setTitle("You were killed!")
+                                .setMessage("DEAD")
                                 .setPositiveButton("Leave game", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        dataSnapshot.getRef().setValue(null);
                                         finish();
                                     }
                                 })
                                 .create();
-                    } else {
-                        Log.v(TAG, "NOT DEAD!");
+                        dialog.show();
+                        Log.v(TAG, dialog.toString());
+
                     }
+                }
+                if(player.getTargetuid().equals(player.getUid())) {
+                    AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("You are the winner!")
+                            .setMessage("Congratulation")
+                            .setPositiveButton("End game", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dataSnapshot.getRef().setValue(null);
+                                    stopGame();
+                                }
+                            })
+                            .create();
+                    dialog.show();
+                    Log.v(TAG, dialog.toString());
                 }
             }
 
