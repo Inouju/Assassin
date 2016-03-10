@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 boolean result = assassin.killPressed();
                 if(result) {
-                    mLeaderboardFragment.refresh();
+                   // mLeaderboardFragment.refresh();
                 }
                 Log.v("hi", assassin.getPlayer().getKills()+"");
             }
