@@ -28,6 +28,7 @@ public class Player {
     private long kills;
     private long deaths;
     private long currency;
+    private boolean isAdmin;
     public boolean isPlaying;
 
     private OnPlayerUpdatedListener mPlayerUpdatedListener;
@@ -76,6 +77,7 @@ public class Player {
     public String getTargetuid() { return targetuid; }
 
     public void setTargetuid(String tuid) {
+        groupRef.child("players").child(uid).child("targetUid").setValue(tuid);
         this.targetuid = tuid;
     }
 
@@ -121,6 +123,14 @@ public class Player {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     public void setLatitude(double latitude) {

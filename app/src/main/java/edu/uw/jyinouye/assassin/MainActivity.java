@@ -27,6 +27,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.ChildEventListener;
@@ -44,11 +45,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.uw.jyinouye.assassin.fragments.ChatFragment;
@@ -306,6 +312,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mProfileFragment)
                         .hide(mMapFragment);
                 break;
+            case R.id.admin_start_game:
+                startGame();
+                break;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
@@ -384,7 +393,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onLocationChanged(Location location) {
         player.setLocation(location);
+        mLastLocation = location;
         updatePlayerMarkers();
+    }
+
+    private void startGame() {
+        List<Player> players = new ArrayList<>();
+        for(Player p : this.players.values()) {
+            players.add(p);
+            p.setRef(assassin.getGroup());
+        }
+        // shuffle players,
+        Collections.shuffle(players);
+        for(int i = 0; i < players.size() - 1; i++) {
+            players.get(i).setTargetuid(players.get(i + 1).getUid());
+        }
+        players.get(players.size() - 1).setUid(players.get(0).getUid());
+        Log.v(TAG, players.toString());
     }
 
     private void updatePlayerMarkers() {
@@ -392,12 +417,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Collection<Player> playersCopy = players.values();
         Log.v(TAG, "Attempting to update player markers. #Players = " + playersCopy.size());
         for(Player p : playersCopy) {
-            if(!p.getEmail().equals(player.getEmail())) {
+            if (!p.getEmail().equals(player.getEmail())) {
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(p.getLatitude(), p.getLongitude()))
                         .title(p.getEmail())
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_player_marker))
                 );
+                checkRange(p);
+                Log.v(TAG, "Player: " + p.getEmail() + ", location " + p.getLatitude() + ", " + p.getLongitude());
             }
+        }
+    }
+
+    private void checkRange(Player p) {
+        Location l = new Location("");
+        l.setLatitude(p.getLatitude());
+        l.setLongitude(p.getLongitude());
+        float distance = l.distanceTo(mLastLocation);
+        // if distance is less than 15 meters
+        if(distance < 15) {
+            Toast toast = Toast.makeText(this, p.getEmail() + " is in range", Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 
@@ -405,7 +445,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //query firebase for all players
         final Firebase groupRef = assassin.getGroup();
         groupRef.child("players").addChildEventListener(new ChildEventListener() {
-
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Player player = dataSnapshot.getValue(Player.class);
