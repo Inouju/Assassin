@@ -222,19 +222,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
-        Log.v(TAG, "The player's admin status = " + player.getAdmin() );
-        if(player.getAdmin()) {
-            item.setEnabled(true);
+        //Log.v(TAG, "The player's admin status = " + player.getAdmin() );
+        //if(!player.getAdmin()) {
+        //    player.setAdmin(true);
+        //    item.setEnabled(true);
             switch (item.getItemId()) {
                 case R.id.admin_start_game:
                     startGame();
                     return true;
             }
             return super.onOptionsItemSelected(item);
-        } else {
-            item.setEnabled(false);
-        }
-        return false;
+        //} else {
+        //    item.setEnabled(false);
+        //}
+        //return false;
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
