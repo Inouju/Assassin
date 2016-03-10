@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Log.v(TAG, "selectedAvator: " + selectedAvator);
 
-
+        //allows user to select their avatar
         if (selectedAvator == 1) {
             profile_image.setImageResource(R.drawable.avator1);
         } else if (selectedAvator == 2) {
