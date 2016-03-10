@@ -487,8 +487,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (lat != null && lng != null) {
                     player.setLatitude((double) lat);
                     player.setLongitude((double) lng);
-                    players.put(dataSnapshot.getKey(), player);
                 }
+                players.put(dataSnapshot.getKey(), player);
             }
 
             @Override
