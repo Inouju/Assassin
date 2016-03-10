@@ -57,9 +57,11 @@ public class Assassin extends Application implements ValueEventListener {
                 globalPlayerRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        Object userName = snapshot.child("userName").getValue();
-                        if (userName != null) {
-                            mPlayer.setUserName(userName.toString());
+                        String username = snapshot.child("username").getValue(String.class);
+                        Log.v(TAG, "username TEST: " + username);
+                        if (username != null) {
+                            Log.v(TAG, "username TEST2");
+                            mPlayer.setUserName(username);
                         }
                     }
 
@@ -117,10 +119,13 @@ public class Assassin extends Application implements ValueEventListener {
 
 
     //player selects login
-    public void login(String email, String password, int avator) {
+    public void login(String email, String password, int avatar) {
         mPlayer.setEmail(email);
-        mPlayer.setAvator(avator);
+        mPlayer.setAvator(avatar);
         ref.authWithPassword(email, password, authResultHandler);
+
+
+
     }
 
     //player wants to join a group of groupName and uses a specific password

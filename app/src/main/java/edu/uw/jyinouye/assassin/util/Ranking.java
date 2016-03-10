@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class Ranking implements Comparable{
 
-    private String email;
+    private String email; // email of the user
     private String userName;
     private long kills;
 
@@ -35,13 +35,15 @@ public class Ranking implements Comparable{
         return kills;
     }
 
+    //compare to to be able to sort the values in the table
     @Override
     public int compareTo(Object another) {
         Ranking r = (Ranking)another;
         return (int)this.kills - (int)r.getKills();
     }
 
+    //tosting to have the array adapter be called
     public String toString() {
-        return this.userName + " " + this.getKills();
+        return this.userName + "       kills: " + this.getKills();
     }
 }
