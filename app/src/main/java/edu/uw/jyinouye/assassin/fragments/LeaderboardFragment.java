@@ -59,12 +59,18 @@ public class LeaderboardFragment extends Fragment {
         mPlayers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                rankings.clear();
+                LeaderboardAdapter.clear();
                 for(DataSnapshot dater : dataSnapshot.getChildren()) {
                     String email = dater.child("email").getValue(String.class);
                     int kills = dater.child("kills").getValue(Integer.class);
                     String username = dater.child("username").getValue(String.class);
                     Ranking rank = new Ranking(email, username, kills);
                     rankings.add(rank);
+                    Collections.sort(rankings);
+                    for(int i = 0;i < rankings.size();i++) {
+                        LeaderboardAdapter.insert(rankings.get(i),0);
+                    }
                 }
             }
 
@@ -73,6 +79,7 @@ public class LeaderboardFragment extends Fragment {
 
             }
         });
+        LeaderboardAdapter = new ArrayAdapter(getActivity(), R.layout.list_item,R.id.txtItem);
         Log.v(TAG, "mPlayers: " + mPlayers);
     }
 
@@ -90,10 +97,7 @@ public class LeaderboardFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        LeaderboardAdapter = new ArrayAdapter(getActivity(), R.layout.list_item,R.id.txtItem);
         listView.setAdapter(LeaderboardAdapter);
-        refresh();
     }
 
     @Override
@@ -109,35 +113,5 @@ public class LeaderboardFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-    public void refresh() {
-        rankings.clear();
-        mPlayers.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot dater : dataSnapshot.getChildren()) {
-                    String email = dater.child("email").getValue(String.class);
-                    int kills = dater.child("kills").getValue(Integer.class);
-                    String username = dater.child("username").getValue(String.class);
-                    Ranking rank = new Ranking(email, username, kills);
-                    rankings.add(rank);
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-        Collections.sort(rankings);
-        for(int i = 0;i < rankings.size();i++) {
-            LeaderboardAdapter.insert(rankings.get(i),0);
-        }
     }
 }
