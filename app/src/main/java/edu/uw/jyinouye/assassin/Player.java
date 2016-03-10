@@ -40,12 +40,12 @@ public class Player {
 
     public Player(String uid, String email, String groupName, int avator) {
 
-        this.uid = uid;
-        this.email = email;
-        this.groupName = groupName;
-        this.avator = avator;
-        this.kills = 0;
-        this.deaths = 0;
+        this.uid = uid; //user id of hte player
+        this.email = email;// email of the current user
+        this.groupName = groupName; // current name of the group
+        this.avator = avator; //avator of the current player
+        this.kills = 0; // kills
+        this.deaths = 0; // deafss
         this.currency = 0;
         this.targetuid = "YOU!";
         this.isPlaying = true;
