@@ -115,6 +115,7 @@ public class Assassin extends Application implements ValueEventListener {
         this.groupRef = ref.child("groups").child(groupName);
         this.groupPassword = groupPassword;
         mPlayer.setRef(this.groupRef);
+        mPlayer.setisPlaying(true);
         Log.v(TAG, "Join Group");
         // check that password is correct
         groupRef.addListenerForSingleValueEvent(this);
@@ -196,6 +197,8 @@ public class Assassin extends Application implements ValueEventListener {
                     mPlayer.setDeaths(player.getDeaths());
                     mPlayer.setCurrency(player.getCurrency());
                     mPlayer.setUserName(player.getUserName());
+                    mPlayer.setTargetuid(player.getTargetuid());
+                    mPlayer.setisPlaying(true);
                 }
 
                 @Override
