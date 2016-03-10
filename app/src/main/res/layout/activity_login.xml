@@ -132,8 +132,9 @@
                 android:layout_marginTop="10dp">
 
                 <ImageButton
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
                     android:id="@+id/avator1"
@@ -142,8 +143,9 @@
                     android:cropToPadding="false" />
 
                 <ImageButton
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
                     android:id="@+id/avator2"
@@ -152,8 +154,9 @@
                     android:cropToPadding="false" />
 
                 <ImageButton
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
                     android:id="@+id/avator3"
@@ -162,8 +165,9 @@
                     android:cropToPadding="false" />
 
                 <ImageButton
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
                     android:id="@+id/avator4"
@@ -184,8 +188,9 @@
                 android:layout_centerHorizontal="true" >
 
                 <ImageButton
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
                     android:id="@+id/avator5"
@@ -194,8 +199,9 @@
                     android:cropToPadding="false" />
 
                 <ImageButton
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
                     android:id="@+id/avator6"
@@ -204,8 +210,9 @@
                     android:cropToPadding="false" />
 
                 <ImageButton
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
                     android:id="@+id/avator7"
@@ -214,8 +221,9 @@
                     android:cropToPadding="false" />
 
                 <ImageButton
-                    android:layout_width="80dp"
+                    android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
                     android:id="@+id/avator8"

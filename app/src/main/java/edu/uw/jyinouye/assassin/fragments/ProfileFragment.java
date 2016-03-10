@@ -51,7 +51,7 @@ public class ProfileFragment extends Fragment {
         TextView deaths = (TextView) rootView.findViewById(R.id.profile_deaths);
         TextView currency = (TextView) rootView.findViewById(R.id.profile_currency);
 
-        int selectedAvator = player.getAvator();
+        final int selectedAvator = player.getAvator();
         ImageView profile_image = (ImageView) rootView.findViewById(R.id.profile_image);
         setProfileImage(profile_image, selectedAvator, rootView);
 
@@ -67,7 +67,11 @@ public class ProfileFragment extends Fragment {
         target.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int selectedAvatar2 = dataSnapshot.child("avator").getValue(Integer.class);
+                Object avatar = dataSnapshot.child("avator").getValue();
+                int selectedAvatar2 = 0;
+                if(avatar != null) {
+                    selectedAvatar2 = (int) avatar;
+                }
                 String name = dataSnapshot.child("userName").getValue(String.class);
                 TextView target_name = (TextView) rootView.findViewById(R.id.target_name);
                 target_name.setText(name);

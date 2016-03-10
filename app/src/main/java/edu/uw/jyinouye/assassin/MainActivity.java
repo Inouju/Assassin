@@ -497,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //update each player in the group
         for(Player p : playersCopy) {
-            if (!p.getEmail().equals(player.getEmail())) {
+            if (p != null && !p.getEmail().equals(player.getEmail())) {
                 Log.v(TAG, "Target: " + player.getTargetuid());
                 if(player.getTargetuid().equals(p.getUid())) {
                     mMap.addMarker(new MarkerOptions()
