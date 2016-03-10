@@ -500,10 +500,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     databasePlayer.setTargetuid(databasePlayer.getTargetuid());
                     players.put(dataSnapshot.getKey(), databasePlayer);
                 }
+                // if changed player is you
                 if(databasePlayer != null && databasePlayer.getUid().equals(player.getUid())) {
                     player.setTargetuid(databasePlayer.getTargetuid());
                     // if player is dead
                     if(databasePlayer.getIsDead()) {
+                        dataSnapshot.getRef().child("isDead").setValue(true);
                         player.setIsDead(true);
                         dataSnapshot.getRef().setValue(null);
                         AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
@@ -518,10 +520,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 })
                                 .create();
                         dialog.show();
-                        Log.v(TAG, dialog.toString());
 
                     }
                 }
+                Log.v(TAG, "Target: " + player.getTargetuid());
                 if(winnerFlag && player.getTargetuid().equals(player.getUid())) {
                     winnerFlag = false;
                     AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
