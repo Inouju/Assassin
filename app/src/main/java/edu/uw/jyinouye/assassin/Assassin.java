@@ -82,7 +82,7 @@ public class Assassin extends Application implements ValueEventListener {
         return this.singleton;
     }
 
-    public void signup(final String email, final String password, final String userName) {
+    public void signup(final String email, final String password, final String userName, final int avator) {
         ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
             public void onSuccess(Map<String, Object> result) {
@@ -91,6 +91,7 @@ public class Assassin extends Application implements ValueEventListener {
                 mPlayer.setUid(result.get("uid").toString());
                 mPlayer.setEmail(email);
                 mPlayer.setUserName(userName);
+                mPlayer.setAvator(avator);
 
                 // adds to update global players here
                 ref.child("players").child(result.get("uid").toString()).child("email").setValue(mPlayer.getEmail());
@@ -108,8 +109,9 @@ public class Assassin extends Application implements ValueEventListener {
         });
     }
 
-    public void login(String email, String password) {
+    public void login(String email, String password, int avator) {
         mPlayer.setEmail(email);
+        mPlayer.setAvator(avator);
         ref.authWithPassword(email, password, authResultHandler);
     }
 
@@ -123,8 +125,6 @@ public class Assassin extends Application implements ValueEventListener {
         Log.v(TAG, "Join Group");
         // check that password is correct
         groupRef.addListenerForSingleValueEvent(this);
-
-
     }
 
     public void createGroup(String groupName, String groupPassword) {
