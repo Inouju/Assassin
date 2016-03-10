@@ -42,7 +42,16 @@
                 android:layout_gravity="center_horizontal"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="20dp"
+                android:text="Username"
+                android:layout_marginTop="5dp" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/profile_image"
+                android:src="@drawable/avator1"
+                android:layout_marginBottom="30dp" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

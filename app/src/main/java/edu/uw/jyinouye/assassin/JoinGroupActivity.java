@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
@@ -71,6 +72,7 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         groupNames = new ArrayList<>();
 
         ((TextView) findViewById(R.id.user_name)).setText(assassin.getPlayer().getUserName());
+        setProfileImage();
 
         // Set up the login form.
         mJoinGroup = (Button) findViewById(R.id.join_group);
@@ -119,6 +121,31 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
+
+    //sets profile avatar
+    public void setProfileImage() {
+        int selectedAvator = assassin.getPlayer().getAvator();
+        ImageView profile_image = (ImageView) findViewById(R.id.profile_image);
+        if (selectedAvator == 1) {
+            profile_image.setImageResource(R.drawable.avator1);
+        } else if (selectedAvator == 2) {
+            profile_image.setImageResource(R.drawable.avator2);
+        } else if (selectedAvator == 3) {
+            profile_image.setImageResource(R.drawable.avator3);
+        } else if (selectedAvator == 4) {
+            profile_image.setImageResource(R.drawable.avator4);
+        } else if (selectedAvator == 5) {
+            profile_image.setImageResource(R.drawable.avator5);
+        } else if (selectedAvator == 6) {
+            profile_image.setImageResource(R.drawable.avator6);
+        } else if (selectedAvator == 7) {
+            profile_image.setImageResource(R.drawable.avator7);
+        } else if (selectedAvator == 8) {
+            profile_image.setImageResource(R.drawable.avator8);
+        }
+    }
+
+
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -292,4 +319,3 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         }
     }
 }
-
