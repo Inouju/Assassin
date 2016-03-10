@@ -44,6 +44,6 @@ public class Ranking implements Comparable{
 
     //tosting to have the array adapter be called
     public String toString() {
-        return this.userName + "       kills: " + this.getKills();
+        return this.userName + " kills: " + this.getKills();
     }
 }

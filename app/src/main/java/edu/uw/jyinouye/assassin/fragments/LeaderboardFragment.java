@@ -84,7 +84,7 @@ public class LeaderboardFragment extends Fragment {
                 //sorts and collects all the present rankings
                 Collections.sort(rankings);
                 for(int i = 0;i < rankings.size();i++) {
-                    LeaderboardAdapter.insert((i+1)+":      "+rankings.get(i),i);
+                    LeaderboardAdapter.insert((i+1)+": "+rankings.get(i),i);
                 }
             }
 
