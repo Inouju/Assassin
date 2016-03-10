@@ -451,6 +451,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.clear();
         Collection<Player> playersCopy = players.values();
         Log.v(TAG, "Attempting to update player markers. #Players = " + playersCopy.size());
+
+        //update each player in the group
         for(Player p : playersCopy) {
             if (!p.getEmail().equals(player.getEmail())) {
                 Log.v(TAG, "Target: " + player.getTargetuid());
@@ -534,10 +536,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
 
                 //loser case
+                // if changed player is you
                 if(databasePlayer != null && databasePlayer.getUid().equals(player.getUid())) {
                     player.setTargetuid(databasePlayer.getTargetuid());
                     // if player is dead
                     if(databasePlayer.getIsDead()) {
+                        dataSnapshot.getRef().child("isDead").setValue(true);
                         player.setIsDead(true);
                         dataSnapshot.getRef().setValue(null);
 
@@ -554,12 +558,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 })
                                 .create();
                         dialog.show();
-                        Log.v(TAG, dialog.toString());
 
                     }
                 }
 
                 //Winner if last player
+                Log.v(TAG, "Target: " + player.getTargetuid());
                 if(winnerFlag && player.getTargetuid().equals(player.getUid())) {
                     winnerFlag = false;
 
