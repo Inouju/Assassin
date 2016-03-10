@@ -121,6 +121,8 @@ public class Assassin extends Application implements ValueEventListener {
         Log.v(TAG, "Join Group");
         // check that password is correct
         groupRef.addListenerForSingleValueEvent(this);
+
+
     }
 
     public void createGroup(String groupName, String groupPassword) {
@@ -210,9 +212,29 @@ public class Assassin extends Application implements ValueEventListener {
         ref.child("groups").addValueEventListener(mListener);
     }
 
+    /*
+    //gets the user
+    final Firebase target = groupRef.child("players").child(mPlayer.getUid());
+    target.addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            if(dataSnapshot.getChildrenCount() == 1){
+                Log.v(TAG, "THERES SOMEONE HERE!@!!!@@@KJ@LJ@LJH@KG@KGH@JKLH@LKJH@LKJH@KLJH@LKJ@HKLH@KLJH@KLJH@KLH@KLJH@KLH@");
+            } else {
+                Log.v(TAG,"OH SHITTTTTT GFUCK MY AAAAAAAARSE");
+            }
+        }
+
+        @Override
+        public void onCancelled(FirebaseError firebaseError) {
+
+        }
+    });
+    */
+
     // callback when data in groupRef object gets changed
     @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
+    public void onDataChange(final DataSnapshot dataSnapshot) {
         Log.v(TAG, "Group data change: " + dataSnapshot.getValue());
         // user provides correct credentials
         if(dataSnapshot.child("password").getValue().equals(groupPassword)) {
@@ -229,8 +251,17 @@ public class Assassin extends Application implements ValueEventListener {
                     mPlayer.setDeaths(player.getDeaths());
                     mPlayer.setCurrency(player.getCurrency());
                     mPlayer.setUserName(player.getUserName());
+                    Log.v(TAG, String.valueOf(dataSnapshot.getChildrenCount()));
+                    if(dataSnapshot.getChildrenCount() == 1){
+                        Log.v(TAG, "THERES SOMEONE HERE!@!!!@@@KJ@LJ@LJH@KG@KGH@JKLH@LKJH@LKJH@KLJH@LKJ@HKLH@KLJH@KLJH@KLH@KLJH@KLH@");
+                        mPlayer.setAdmin(true);
+                        mPlayer.
+                    } else {
+                        Log.v(TAG,"OH SHITTTTTT GFUCK MY AAAAAAAARSE");
+                        mPlayer.setAdmin(false);
+                    }
                     mPlayer.setisPlaying(true);
-                    mPlayer.setAdmin(false);
+
                 }
 
                 @Override
