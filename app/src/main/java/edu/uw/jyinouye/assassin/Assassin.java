@@ -141,6 +141,7 @@ public class Assassin extends Application implements ValueEventListener {
         groupRef.addListenerForSingleValueEvent(this);
     }
 
+    //creates a group for a user
     public void createGroup(String groupName, String groupPassword) {
         // create new groupRef, set password property
         Map<String, Object> group = new HashMap<>();
@@ -153,7 +154,7 @@ public class Assassin extends Application implements ValueEventListener {
         this.mPlayer.setAdmin(true);
     }
 
-    public boolean killPressed() {
+    public boolean killPressed() { // this is the method that deals with whether a kill button is pressed
         final boolean[] factors = {false};
         if(mPlayer.getTargetuid() != null) {
             final Firebase target = groupRef.child("players").child(mPlayer.getTargetuid());
