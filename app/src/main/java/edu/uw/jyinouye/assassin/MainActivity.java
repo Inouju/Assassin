@@ -523,7 +523,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     }
                 }
+
+            }
+
+            @Override
+            public void onChildRemoved(final DataSnapshot dataSnapshot) {
+                players.remove(dataSnapshot.getKey());
                 Log.v(TAG, "Target: " + player.getTargetuid());
+                // check if player is last remaining
                 if(winnerFlag && player.getTargetuid().equals(player.getUid())) {
                     winnerFlag = false;
                     AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
@@ -540,11 +547,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     dialog.show();
                     Log.v(TAG, dialog.toString());
                 }
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                players.remove(dataSnapshot.getKey());
 
             }
 
