@@ -1,6 +1,7 @@
 package edu.uw.jyinouye.assassin;
 
 import android.app.Application;
+import android.location.Location;
 import android.util.Log;
 
 import com.firebase.client.AuthData;
@@ -133,9 +134,32 @@ public class Assassin extends Application implements ValueEventListener {
     }
 
     public void killPressed() {
+        Firebase target = groupRef.child("players").child(mPlayer.getTargetuid());
+        final int[] counter2 = {0};
+        ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Long lat = (Long) dataSnapshot.child("latitude").getValue();
+                Long longit = (Long) dataSnapshot.child("longitude").getValue();
+                Location r = new Location("enemy user");
+                r.setLatitude(lat);
+                r.setLongitude(longit);
+                if (counter2[0] < 1){
+                    Integer value = (int) (long) dataSnapshot.getValue();
+                    counter2[0]++;
+                    //playerkill.setValue(value + 1);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
         mPlayer.incKill();
-        final Firebase playerkill = groupRef.child("players").child(mPlayer.getUid()).child("kills");
         final int[] counter = {0};
+        final Firebase playerkill = groupRef.child("players").child(mPlayer.getUid()).child("kills");
         ValueEventListener listener = playerkill.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -151,7 +175,6 @@ public class Assassin extends Application implements ValueEventListener {
 
             }
         });
-        //playerkill.setValue(mPlayer.getKills());
     }
 
     public Firebase getRef() {
