@@ -562,8 +562,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
 
+<<<<<<< HEAD
                 //Winner if last player
+=======
+            }
+
+            @Override
+            public void onChildRemoved(final DataSnapshot dataSnapshot) {
+                players.remove(dataSnapshot.getKey());
+>>>>>>> 599ee37b9106d2f7785935272d8cb6a73a57caad
                 Log.v(TAG, "Target: " + player.getTargetuid());
+                // check if player is last remaining
                 if(winnerFlag && player.getTargetuid().equals(player.getUid())) {
                     winnerFlag = false;
 
@@ -582,11 +591,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     dialog.show();
                     Log.v(TAG, dialog.toString());
                 }
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                players.remove(dataSnapshot.getKey());
 
             }
 
