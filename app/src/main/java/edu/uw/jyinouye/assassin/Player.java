@@ -31,6 +31,7 @@ public class Player {
     private long currency;
     private boolean isAdmin;
     public boolean isPlaying;
+    public boolean isDead;
 
     private OnPlayerUpdatedListener mPlayerUpdatedListener;
 
@@ -46,6 +47,7 @@ public class Player {
         this.currency = 0;
         this.targetuid = "YOU!";
         this.isPlaying = true;
+        this.isDead = false;
     }
 
     public long getCurrency() { return currency; }
@@ -75,6 +77,9 @@ public class Player {
 
     public boolean getIsPlaying() { return isPlaying; }
 
+    public boolean getIsDead() { return isDead; }
+
+    public void setIsDead(boolean isDead) { this.isDead = isDead; }
 
     public void setRef(Firebase ref) {
         groupRef = ref;
