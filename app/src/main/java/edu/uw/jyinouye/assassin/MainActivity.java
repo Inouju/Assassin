@@ -98,9 +98,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-        ImageView overlay = (ImageView)findViewById(R.id.main_overlay);
-        overlay.setBackgroundColor(Color.argb(127, 213, 0, 0));
-        overlay.setVisibility(View.GONE);
+        //ImageView overlay = (ImageView)findViewById(R.id.main_overlay);
+        //overlay.setBackgroundColor(Color.argb(127, 213, 0, 0));
+        //overlay.setVisibility(View.GONE);
 
         assassin = ((Assassin)getApplicationContext()).getInstance();
         player = assassin.getPlayer();
@@ -325,7 +325,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case R.id.admin_start_game:
                 startGame();
-                break;
+                mDrawer.closeDrawers();
+                return;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
