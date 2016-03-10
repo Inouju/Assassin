@@ -224,24 +224,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             case android.R.id.home:
                 mDrawer.openDrawer(GravityCompat.START);
                 return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    //JASON, does this affect the start button???
-    /*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // The action bar home/up action should open or close the drawer.
-        switch (item.getItemId()) {
             case R.id.admin_start_game:
                 startGame();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
-    */
+
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
