@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.drawer_view, menu);
+        inflater.inflate(R.menu.toolbar_menu, menu);
         return true;
     }
 
@@ -498,7 +498,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     player.setLongitude((double) lng);
                 }
                 players.put(dataSnapshot.getKey(), player);
-                onLocationChanged(mLastLocation);
+                if(mLastLocation != null) {
+                    onLocationChanged(mLastLocation);
+                }
             }
 
             @Override
