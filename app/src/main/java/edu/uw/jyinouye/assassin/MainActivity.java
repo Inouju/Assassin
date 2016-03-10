@@ -427,6 +427,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v(TAG, "Last player in chain: " + players.get(players.size() - 1).getEmail());
     }
 
+    private void stopGame() {
+        mMap.clear();
+    }
+
     private void updatePlayerMarkers() {
         mMap.clear();
         Collection<Player> playersCopy = players.values();
@@ -507,6 +511,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Log.v(TAG, dialog.toString());
 
                     }
+                }
+                if(player.getTargetuid().equals(player.getUid())) {
+                    AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("You are the winner!")
+                            .setMessage("Congratulation")
+                            .setPositiveButton("End game", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dataSnapshot.getRef().setValue(null);
+                                    stopGame();
+                                }
+                            })
+                            .create();
+                    dialog.show();
+                    Log.v(TAG, dialog.toString());
                 }
             }
 
