@@ -159,7 +159,6 @@ public class Assassin extends Application implements ValueEventListener {
                                             Integer value = (int) (long) dataSnapshot2.getValue();
                                             counter[0]++;
                                             playerkill.setValue(value + 1);
-                                            target.child("deaths").setValue(value2 + 1);
                                         }
                                     }
 
