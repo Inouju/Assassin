@@ -134,20 +134,44 @@ public class Assassin extends Application implements ValueEventListener {
     }
 
     public void killPressed() {
-        Firebase target = groupRef.child("players").child(mPlayer.getTargetuid());
+        final Location l = new Location("");
+        l.setLatitude(mPlayer.getLatitude());
+        l.setLongitude(mPlayer.getLongitude());
+        final Firebase target = groupRef.child("players").child(mPlayer.getTargetuid());
         final int[] counter2 = {0};
         ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Long lat = (Long) dataSnapshot.child("latitude").getValue();
-                Long longit = (Long) dataSnapshot.child("longitude").getValue();
-                Location r = new Location("enemy user");
-                r.setLatitude(lat);
-                r.setLongitude(longit);
-                if (counter2[0] < 1){
-                    Integer value = (int) (long) dataSnapshot.getValue();
-                    counter2[0]++;
-                    //playerkill.setValue(value + 1);
+                if (counter2[0] < 1) {
+                    if(dataSnapshot.hasChild("isPlaying") && dataSnapshot.child("isPlaying").getValue() == true) {
+                        Long lat = (Long) dataSnapshot.child("latitude").getValue();
+                        Long longit = (Long) dataSnapshot.child("longitude").getValue();
+                        Location r = new Location("enemy user");
+                        r.setLatitude(lat);
+                        r.setLongitude(longit);
+                        if (l.distanceTo(r) < 15) {
+                            final Integer value2 = (int) (long) dataSnapshot.child("deaths").getValue();
+                            mPlayer.incKill();
+                            final int[] counter = {0};
+                            final Firebase playerkill = groupRef.child("players").child(mPlayer.getUid()).child("kills");
+                            ValueEventListener listener = playerkill.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot2) {
+                                    if (counter[0] < 1) {
+                                        Integer value = (int) (long) dataSnapshot2.getValue();
+                                        counter[0]++;
+                                        playerkill.setValue(value + 1);
+                                        target.child("deaths").setValue(value2 + 1);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+
+                                }
+                            });
+                        }
+                    }
                 }
             }
 
@@ -157,24 +181,7 @@ public class Assassin extends Application implements ValueEventListener {
             }
         });
 
-        mPlayer.incKill();
-        final int[] counter = {0};
-        final Firebase playerkill = groupRef.child("players").child(mPlayer.getUid()).child("kills");
-        ValueEventListener listener = playerkill.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (counter[0] < 1) {
-                    Integer value = (int) (long) dataSnapshot.getValue();
-                    counter[0]++;
-                    playerkill.setValue(value + 1);
-                }
-            }
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
     }
 
     public Firebase getRef() {
