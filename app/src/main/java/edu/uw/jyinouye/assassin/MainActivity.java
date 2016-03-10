@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private MenuItem mLastMenuItem;
+    private Button button;
 
     private SupportMapFragment mMapFragment;
     private ChatFragment mChatFragment;
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
         }
-        final Button button = (Button) findViewById(R.id.kill_button);
+        button = (Button) findViewById(R.id.kill_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 assassin.killPressed();
@@ -285,6 +286,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mLeaderboardFragment)
                         .hide(mProfileFragment)
                         .hide(mShopFragment);
+                button.setVisibility(View.VISIBLE);
                 break;
             case R.id.nav_chat_fragment:
                 ft.show(mChatFragment)
@@ -292,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mLeaderboardFragment)
                         .hide(mProfileFragment)
                         .hide(mShopFragment);
+                button.setVisibility(View.GONE);
                 break;
             case R.id.nav_leaderboard_fragment:
                 ft.show(mLeaderboardFragment)
@@ -299,6 +302,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mMapFragment)
                         .hide(mProfileFragment)
                         .hide(mShopFragment);
+                button.setVisibility(View.GONE);
                 break;
             case R.id.nav_shop_fragment:
                 ft.show(mShopFragment)
@@ -306,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mLeaderboardFragment)
                         .hide(mProfileFragment)
                         .hide(mMapFragment);
+                button.setVisibility(View.GONE);
                 break;
             case R.id.admin_start_game:
                 startGame();
@@ -316,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mLeaderboardFragment)
                         .hide(mProfileFragment)
                         .hide(mShopFragment);
+                button.setVisibility(View.GONE);
                 break;
         }
 
