@@ -504,7 +504,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     player.setTargetuid(databasePlayer.getTargetuid());
                     // if player is dead
                     if(databasePlayer.getIsDead()) {
-                        player.setisPlaying(false);
                         player.setIsDead(true);
                         dataSnapshot.getRef().setValue(null);
                         AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
@@ -606,7 +605,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStop() {
         super.onStop();
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        assassin.getGroup().child("players").child(player.getUid()).child("isPlaying").setValue(false);
+        //assassin.getGroup().child("players").child(player.getUid()).child("isPlaying").setValue(false);
     }
 
     @Override
