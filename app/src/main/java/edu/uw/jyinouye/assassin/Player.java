@@ -101,6 +101,7 @@ public class Player {
 
     public void setTarget(String tuid) {
         groupRef.child("players").child(uid).child("targetuid").setValue(tuid);
+        this.targetuid = tuid;
     }
 
     public void setEmail(String email) {

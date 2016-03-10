@@ -422,7 +422,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v(TAG, "Attempting to update player markers. #Players = " + playersCopy.size());
         for(Player p : playersCopy) {
             if (!p.getEmail().equals(player.getEmail())) {
-                if(player.getTargetuid() != null && player.getTargetuid().equals(p.getUid())) {
+                Log.v(TAG, "Target: " + player.getTargetuid());
+                if(player.getTargetuid().equals(p.getUid())) {
                     mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(p.getLatitude(), p.getLongitude()))
                             .title(p.getEmail())
@@ -473,7 +474,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.v(TAG, "databaseplayer lng:" + dataSnapshot.child("longitude").getValue());
                 databasePlayer.setLatitude((double)dataSnapshot.child("latitude").getValue());
                 databasePlayer.setLongitude((double)dataSnapshot.child("longitude").getValue());
+                databasePlayer.setTargetuid(databasePlayer.getTargetuid());
                 players.put(dataSnapshot.getKey(), databasePlayer);
+                if(databasePlayer.getUid().equals(player.getUid())) {
+                    player.setTargetuid(databasePlayer.getTargetuid());
+                }
             }
 
             @Override
