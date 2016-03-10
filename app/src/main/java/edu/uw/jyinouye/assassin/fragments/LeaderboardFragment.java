@@ -61,9 +61,9 @@ public class LeaderboardFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot dater : dataSnapshot.getChildren()) {
-                    String email = (String) dater.child("email").getValue();
-                    Long kills = (Long) dater.child("kills").getValue();
-                    String username = (String) dater.child("username").getValue();
+                    String email = dater.child("email").getValue(String.class);
+                    int kills = dater.child("kills").getValue(Integer.class);
+                    String username = dater.child("username").getValue(String.class);
                     Ranking rank = new Ranking(email, username, kills);
                     rankings.add(rank);
                 }

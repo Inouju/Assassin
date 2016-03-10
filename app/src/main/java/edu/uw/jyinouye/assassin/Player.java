@@ -23,6 +23,7 @@ public class Player {
     private String email;
     private String userName;
     private String groupName;
+    private int avator;
     private Location location;
     private double latitude;
     private double longitude;
@@ -37,11 +38,12 @@ public class Player {
 
     public Player() {}
 
-    public Player(String uid, String email, String groupName) {
+    public Player(String uid, String email, String groupName, int avator) {
 
         this.uid = uid;
         this.email = email;
         this.groupName = groupName;
+        this.avator = avator;
         this.kills = 0;
         this.deaths = 0;
         this.currency = 0;
@@ -63,6 +65,8 @@ public class Player {
     public String getUserName() { return userName;}
 
     public String getGroupName() { return groupName; }
+
+    public int getAvator() { return avator; }
 
     public String getTargetuid() { return targetuid; }
 
@@ -119,6 +123,10 @@ public class Player {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public void setAvator(int avator) {
+        this.avator = avator;
     }
 
     public void setKills(int kills) {

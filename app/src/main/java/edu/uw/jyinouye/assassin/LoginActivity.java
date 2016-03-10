@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -31,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.firebase.client.FirebaseError;
@@ -65,6 +67,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     private boolean toggleSignUp;
 
+    private int selectedAvator;
+    private ImageButton[] avatorList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +85,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
         mUserNameView = (EditText) findViewById(R.id.user_name_field);
+
+        //initialize avators
+        initializeAvators();
 
         mPasswordView = (EditText) findViewById(R.id.user_password);
         mPasswordConfirmView = (EditText) findViewById(R.id.confirm_user_password);
@@ -109,9 +117,125 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 toggleSignUp();
             }
         });
-
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private void initializeAvators() {
+        ImageButton avator1 = (ImageButton) findViewById(R.id.avator1);
+        ImageButton avator2 = (ImageButton) findViewById(R.id.avator2);
+        ImageButton avator3 = (ImageButton) findViewById(R.id.avator3);
+        ImageButton avator4 = (ImageButton) findViewById(R.id.avator4);
+        ImageButton avator5 = (ImageButton) findViewById(R.id.avator5);
+        ImageButton avator6 = (ImageButton) findViewById(R.id.avator6);
+        ImageButton avator7 = (ImageButton) findViewById(R.id.avator7);
+        ImageButton avator8 = (ImageButton) findViewById(R.id.avator8);
+        avatorList = new ImageButton[]{avator1, avator1, avator2, avator3, avator4, avator5, avator6, avator7, avator8};
+
+        selectedAvator = 1;
+        avatorList[1].setColorFilter(Color.argb(155, 185, 185, 185));
+
+        avator1.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
+                                           selectedAvator = 1;
+                                           highlightButton();
+                                       }
+                                   }
+        );
+
+        avator2.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
+                                           selectedAvator = 2;
+                                           highlightButton();
+                                       }
+                                   }
+        );
+
+        avator3.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
+                                           selectedAvator = 3;
+                                           highlightButton();
+                                       }
+                                   }
+        );
+
+        avator4.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
+                                           selectedAvator = 4;
+                                           highlightButton();
+                                       }
+                                   }
+        );
+        avator5.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
+                                           selectedAvator = 5;
+                                           highlightButton();
+                                       }
+                                   }
+        );
+        avator6.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
+                                           selectedAvator = 6;
+                                           highlightButton();
+                                       }
+                                   }
+        );
+        avator7.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
+                                           selectedAvator = 7;
+                                           highlightButton();
+                                       }
+                                   }
+        );
+        avator8.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
+                                           selectedAvator = 8;
+                                           highlightButton();
+                                       }
+                                   }
+        );
+    }
+
+    //highlights selected avator
+    public void highlightButton() {
+        resetFilter();
+        if (selectedAvator == 1) {
+            avatorList[1].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvator == 2) {
+            avatorList[2].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvator == 3) {
+            avatorList[3].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvator == 4) {
+            avatorList[4].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvator == 5) {
+            avatorList[5].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvator == 6) {
+            avatorList[6].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvator == 7) {
+            avatorList[7].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvator == 8) {
+            avatorList[8].setColorFilter(Color.argb(155, 185, 185, 185));
+        }
+    }
+
+    //makes sure only 1 filter is highlighted at a time
+    public void resetFilter() {
+        avatorList[1].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatorList[2].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatorList[3].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatorList[4].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatorList[5].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatorList[6].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatorList[7].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatorList[8].setColorFilter(Color.argb(0, 185, 185, 185));
     }
 
     private void toggleSignUp() {
@@ -237,7 +361,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, userName);
+            mAuthTask = new UserLoginTask(email, password, userName, selectedAvator);
             mAuthTask.execute();
         }
     }
@@ -359,10 +483,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final Assassin assassin;
         private boolean success;
 
-        UserLoginTask(String email, String password, String userName) {
+        private final int mAvator;
+
+        UserLoginTask(String email, String password, String userName, Integer selectedAvator) {
             mEmail = email;
             mPassword = password;
             mUserName = userName;
+            mAvator = selectedAvator;
             assassin = ((Assassin)getApplicationContext()).getInstance();
         }
 
@@ -373,14 +500,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             // sign up user
             if(toggleSignUp) {
-                assassin.signup(mEmail, mPassword, mUserName);
+                assassin.signup(mEmail, mPassword, mUserName, mAvator);
             } else {
-                assassin.login(mEmail, mPassword);
+                assassin.login(mEmail, mPassword, mAvator);
             }
 
             // returns true, allowing login, since user registered
             return true;
-
         }
 
         @Override
@@ -396,7 +522,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         public void onSignUpSuccess(String uid) {
-            assassin.login(mEmail, mPassword);
+            assassin.login(mEmail, mPassword, mAvator);
         }
 
         @Override
