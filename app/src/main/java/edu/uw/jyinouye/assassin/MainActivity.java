@@ -3,6 +3,8 @@ package edu.uw.jyinouye.assassin;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.os.Build;
 import android.support.design.widget.NavigationView;
@@ -24,6 +26,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        ImageView overlay = (ImageView)findViewById(R.id.main_overlay);
+        overlay.setBackgroundColor(Color.argb(127, 213, 0, 0));
+        overlay.setVisibility(View.GONE);
 
         assassin = ((Assassin)getApplicationContext()).getInstance();
         player = assassin.getPlayer();
@@ -472,8 +479,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Player databasePlayer = dataSnapshot.getValue(Player.class);
                 Log.v(TAG, "databaseplayer lat: " + dataSnapshot.child("latitude").getValue());
                 Log.v(TAG, "databaseplayer lng:" + dataSnapshot.child("longitude").getValue());
-                databasePlayer.setLatitude((double)dataSnapshot.child("latitude").getValue());
-                databasePlayer.setLongitude((double)dataSnapshot.child("longitude").getValue());
+                databasePlayer.setLatitude((double) dataSnapshot.child("latitude").getValue());
+                databasePlayer.setLongitude((double) dataSnapshot.child("longitude").getValue());
                 databasePlayer.setTargetuid(databasePlayer.getTargetuid());
                 players.put(dataSnapshot.getKey(), databasePlayer);
                 if(databasePlayer.getUid().equals(player.getUid())) {
