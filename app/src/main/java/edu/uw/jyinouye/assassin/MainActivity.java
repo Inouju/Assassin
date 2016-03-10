@@ -496,7 +496,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 players.put(dataSnapshot.getKey(), databasePlayer);
                 if(databasePlayer.getUid().equals(player.getUid())) {
                     player.setTargetuid(databasePlayer.getTargetuid());
+                    // if player is dead
                     if(databasePlayer.getIsDead()) {
+                        dataSnapshot.getRef().setValue(null);
                         AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                                 .setTitle("You were killed!")
                                 .setMessage("DEAD")
