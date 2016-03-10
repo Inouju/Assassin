@@ -87,7 +87,7 @@
                     android:id="@+id/group_password_confirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_group_password"
+                    android:hint="@string/prompt_group_password_confirm"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/prompt_group_password_confirm"
                     android:imeOptions="actionUnspecified"

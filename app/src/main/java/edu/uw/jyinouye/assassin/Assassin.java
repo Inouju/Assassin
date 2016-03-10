@@ -149,14 +149,30 @@ public class Assassin extends Application implements ValueEventListener {
             ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+            target.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    mPlayer.setTargetuid(dataSnapshot.getValue(Player.class).getTargetuid());
+                    Log.v(TAG, "New target: " + mPlayer.getTargetuid());
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+            //final int[] counter2 = {0};
+//            ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
 
                     if (counter2[0] < 1) {
                         if (dataSnapshot.hasChild("isPlaying") && (Boolean) dataSnapshot.child("isPlaying").getValue() == true) {
                                 final Integer value2 = (int) (long) dataSnapshot.child("deaths").getValue();
                                 mPlayer.incKill();
                                 final int[] counter = {0};
-                                final Firebase playerkill = groupRef.child("players").child(mPlayer.getUid()).child("kills");
-                                ValueEventListener listener = playerkill.addValueEventListener(new ValueEventListener() {
+                                final Firebase playerkill = ref.child("players").child(mPlayer.getUid()).child("kills");
+                                playerkill.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot2) {
                                         if (counter[0] < 1) {
