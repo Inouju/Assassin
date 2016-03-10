@@ -116,6 +116,7 @@ public class Assassin extends Application implements ValueEventListener {
         ref.authWithPassword(email, password, authResultHandler);
     }
 
+    //player wants to join a group of groupName and uses a specific password
     public void joinGroup(String groupName, String groupPassword) {
         this.groupRef = ref.child("groups").child(groupName);
         this.groupPassword = groupPassword;
