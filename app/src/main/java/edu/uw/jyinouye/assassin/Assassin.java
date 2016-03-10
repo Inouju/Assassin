@@ -167,7 +167,7 @@ public class Assassin extends Application implements ValueEventListener {
                                 final Integer value2 = (int) (long) dataSnapshot.child("deaths").getValue();
                                 mPlayer.incKill();
                                 final int[] counter = {0};
-                                final Firebase playerkill = groupRef.child("players").child(mPlayer.getUid()).child("kills");
+                                final Firebase playerkill = ref.child("players").child(mPlayer.getUid()).child("kills");
                                 ValueEventListener listener = playerkill.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot2) {
