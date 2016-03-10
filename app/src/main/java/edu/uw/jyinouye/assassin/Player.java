@@ -26,7 +26,7 @@ public class Player {
     private Location location;
     private double latitude;
     private double longitude;
-    private long kills;
+    private int kills;
     private long deaths;
     private long currency;
     private boolean isAdmin;
@@ -52,7 +52,7 @@ public class Player {
 
     public long getCurrency() { return currency; }
 
-    public long getKills() { return kills; }
+    public int getKills() { return kills; }
 
     public long getDeaths() { return deaths; }
 
@@ -121,7 +121,7 @@ public class Player {
         this.groupName = groupName;
     }
 
-    public void setKills(long kills) {
+    public void setKills(int kills) {
         this.kills = kills;
     }
 

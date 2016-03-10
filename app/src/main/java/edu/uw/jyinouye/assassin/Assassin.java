@@ -9,6 +9,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.client.snapshot.BooleanNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -149,52 +150,16 @@ public class Assassin extends Application implements ValueEventListener {
         if(mPlayer.getTargetuid() != null) {
             final Firebase target = groupRef.child("players").child(mPlayer.getTargetuid());
             target.child("isDead").setValue(true);
-            final int[] counter2 = {0};
-            ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+
+
             target.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     mPlayer.setTargetuid(dataSnapshot.getValue(Player.class).getTargetuid());
                     Log.v(TAG, "New target: " + mPlayer.getTargetuid());
-                }
 
-                @Override
-                public void onCancelled(FirebaseError firebaseError) {
-
-                }
-            });
-            //final int[] counter2 = {0};
-//            ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-
-                    if (counter2[0] < 1) {
-                        if (dataSnapshot.hasChild("isPlaying") && (Boolean) dataSnapshot.child("isPlaying").getValue() == true) {
-                                final Integer value2 = (int) (long) dataSnapshot.child("deaths").getValue();
-                                mPlayer.incKill();
-                                final int[] counter = {0};
-                                final Firebase playerkill = ref.child("players").child(mPlayer.getUid()).child("kills");
-                                playerkill.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot2) {
-                                        if (counter[0] < 1) {
-                                            Integer value = (int) (long) dataSnapshot2.getValue();
-                                            counter[0]++;
-                                            playerkill.setValue(value + 1);
-                                            ref.child("players").child("uid").child("kills").setValue(value + 1);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(FirebaseError firebaseError) {
-
-                                    }
-                                });
-                        }
-                        counter2[0]++;
-                    }
+                    mPlayer.incKill();
+                    ref.child("players").child(mPlayer.getUid()).child("kills").setValue(mPlayer.getKills());
                 }
 
                 @Override
