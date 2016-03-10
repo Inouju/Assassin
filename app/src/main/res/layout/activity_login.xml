@@ -123,7 +123,7 @@
                 android:text="Choose your avatar"
                 android:id="@+id/textView10"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="30dp" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -133,7 +133,8 @@
 
                 <ImageButton
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
@@ -144,7 +145,8 @@
 
                 <ImageButton
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
@@ -155,7 +157,8 @@
 
                 <ImageButton
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
@@ -166,7 +169,8 @@
 
                 <ImageButton
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
@@ -189,7 +193,8 @@
 
                 <ImageButton
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
@@ -200,7 +205,8 @@
 
                 <ImageButton
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
@@ -211,7 +217,8 @@
 
                 <ImageButton
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
@@ -222,7 +229,8 @@
 
                 <ImageButton
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:scaleType="fitXY"
