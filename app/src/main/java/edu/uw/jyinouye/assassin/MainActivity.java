@@ -287,6 +287,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    //gives access to a left side drawr menu
     public void selectDrawerItem(MenuItem menuItem) {
 
         if(menuItem == null) {
@@ -300,6 +301,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
 
+        //menu items
+        //each case hides the non active fragments and shows the selected fragment
         switch(menuItem.getItemId()) {
             case R.id.nav_map_fragment:
                 ft.show(mMapFragment)
@@ -403,19 +406,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
+
+        //update location while the player is still playing and havn't died yet
         if(!player.getIsDead() && player.getIsPlaying()) {
             player.setLocation(location);
             mLastLocation = location;
+
+            //update the location
             updatePlayerMarkers();
         }
     }
 
+    //starts the game
     private void startGame() {
+
+        //makes a list
         List<Player> players = new ArrayList<>();
+
+        //adds all the players to the list
         for(Player p : this.players.values()) {
             players.add(p);
             p.setRef(assassin.getGroup());
         }
+
         // shuffle players,
         Collections.shuffle(players);
         for(int i = 0; i < players.size() - 1; i++) {
@@ -428,10 +441,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v(TAG, "Last player in chain: " + players.get(players.size() - 1).getEmail());
     }
 
+    //stops the game
     private void stopGame() {
         mMap.clear();
     }
 
+    //updates the markers on google maps
     private void updatePlayerMarkers() {
         mMap.clear();
         Collection<Player> playersCopy = players.values();
@@ -458,17 +473,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    //checks to let user know if the target is in range
     private void checkRange(Player p) {
         Location l = new Location("");
         l.setLatitude(p.getLatitude());
         l.setLongitude(p.getLongitude());
         float distance = l.distanceTo(mLastLocation);
-        // if distance is less than 15 meters
+
+        // if distance is less than 15 meters allow user to kill the other player
         if(distance < 15) {
             Toast toast = Toast.makeText(this, p.getEmail() + " is in range", Toast.LENGTH_LONG);
             toast.show();
             killButton.setEnabled(true);
         } else {
+
+            //disallow player to kill other play due to range being too high
             killButton.setEnabled(false);
         }
     }
@@ -480,12 +499,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Player player = dataSnapshot.getValue(Player.class);
+
+                //get coordinates
                 Object lat = dataSnapshot.child("latitude").getValue();
                 Object lng = dataSnapshot.child("longitude").getValue();
+
+                //sets valid coordinates
                 if (lat != null && lng != null) {
                     player.setLatitude((double) lat);
                     player.setLongitude((double) lng);
                 }
+
+                //places coordinates in database
                 players.put(dataSnapshot.getKey(), player);
                 if(mLastLocation != null) {
                     onLocationChanged(mLastLocation);
@@ -495,20 +520,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onChildChanged(final DataSnapshot dataSnapshot, String s) {
                 Player databasePlayer = dataSnapshot.getValue(Player.class);
+
+                //get the current latitude and longitude
                 Object lat = dataSnapshot.child("latitude").getValue();
                 Object lng = dataSnapshot.child("longitude").getValue();
+
+                //set the position in the database with valid coordinates
                 if (lat != null && lng != null) {
                     databasePlayer.setLatitude((double) lat);
                     databasePlayer.setLongitude((double) lng);
                     databasePlayer.setTargetuid(databasePlayer.getTargetuid());
                     players.put(dataSnapshot.getKey(), databasePlayer);
                 }
+
+                //loser case
                 if(databasePlayer != null && databasePlayer.getUid().equals(player.getUid())) {
                     player.setTargetuid(databasePlayer.getTargetuid());
                     // if player is dead
                     if(databasePlayer.getIsDead()) {
                         player.setIsDead(true);
                         dataSnapshot.getRef().setValue(null);
+
+                        //player has lost the game
                         AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                                 .setTitle("You were killed!")
                                 .setMessage("DEAD")
@@ -525,8 +558,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     }
                 }
+
+                //Winner if last player
                 if(winnerFlag && player.getTargetuid().equals(player.getUid())) {
                     winnerFlag = false;
+
+                    //alert user that they are the winner of the game
                     AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                             .setTitle("You are the winner!")
                             .setMessage("Congratulation")
@@ -563,6 +600,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onConnected(Bundle bundle) {
+
+        //allows access to the users location
         int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
         if(permission == PackageManager.PERMISSION_GRANTED) {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
@@ -604,9 +643,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
     @Override
     protected void onStop() {
         super.onStop();
+
+        //remove player from the game
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         //assassin.getGroup().child("players").child(player.getUid()).child("isPlaying").setValue(false);
     }
@@ -614,6 +656,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStart() {
         super.onStart();
+
+        //allows player to join a game
         assassin.getGroup().child("players").child(player.getUid()).child("isPlaying").setValue(true);
         if (mGoogleApiClient.isConnected()) {
             startLocationUpdates();
