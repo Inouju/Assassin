@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         mProfileFragment = new ProfileFragment();
-
         fragmentManager
         .beginTransaction()
                 .add(R.id.flContent, mMapFragment)

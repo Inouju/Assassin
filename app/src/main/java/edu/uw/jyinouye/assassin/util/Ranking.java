@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Created by iguest on 3/9/16.
  */
-public class Ranking {
+public class Ranking implements Comparable{
 
     private String email;
     private String userName;
@@ -33,5 +33,15 @@ public class Ranking {
     //@JsonIgnore
     public long getKills() {
         return kills;
+    }
+
+    @Override
+    public int compareTo(Object another) {
+        Ranking r = (Ranking)another;
+        return (int)this.kills - (int)r.getKills();
+    }
+
+    public String toString() {
+        return this.userName + " " + this.getKills();
     }
 }
