@@ -288,16 +288,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    //gives access to a left side drawr menu
+    //sets profile avatar
     public void setProfileImage(View headerView) {
-        Log.v(TAG, "COW");
-
         int selectedAvator = assassin.getPlayer().getAvator();
         ImageView profile_image = (ImageView) headerView.findViewById(R.id.profile_image);
-
-        Log.v(TAG, "selectedAvator: " + selectedAvator);
-
-
         if (selectedAvator == 1) {
             profile_image.setImageResource(R.drawable.avator1);
         } else if (selectedAvator == 2) {
@@ -337,36 +331,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
                         .hide(mLeaderboardFragment)
-                        .hide(mProfileFragment)
-                        .hide(mShopFragment);
+                        .hide(mProfileFragment);
                 killButton.setVisibility(View.VISIBLE);
                 break;
             case R.id.nav_chat_fragment:
                 ft.show(mChatFragment)
                         .hide(mMapFragment)
                         .hide(mLeaderboardFragment)
-                        .hide(mProfileFragment)
-                        .hide(mShopFragment);
+                        .hide(mProfileFragment);
+                killButton.setVisibility(View.GONE);
+                break;
+            case R.id.nav_profile_fragment:
+                ft.show(mProfileFragment)
+                        .hide(mMapFragment)
+                        .hide(mLeaderboardFragment)
+                        .hide(mProfileFragment);
                 killButton.setVisibility(View.GONE);
                 break;
             case R.id.nav_leaderboard_fragment:
                 ft.show(mLeaderboardFragment)
                         .hide(mChatFragment)
                         .hide(mMapFragment)
-                        .hide(mProfileFragment)
-                        .hide(mShopFragment);
+                        .hide(mProfileFragment);
                 killButton.setVisibility(View.GONE);
                 break;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
                         .hide(mLeaderboardFragment)
-                        .hide(mProfileFragment)
-                        .hide(mShopFragment);
+                        .hide(mProfileFragment);
                 killButton.setVisibility(View.GONE);
                 break;
         }
-
         ft.commit();
 
         // Highlight the selected item, update the title, and close the drawer

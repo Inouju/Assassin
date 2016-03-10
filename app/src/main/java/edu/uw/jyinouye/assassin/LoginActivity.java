@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -67,8 +66,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     private boolean toggleSignUp;
 
-    private int selectedAvator;
-    private ImageButton[] avatorList;
+    private int selectedAvatar;
+    private ImageButton[] avatarList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,15 +129,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         ImageButton avator6 = (ImageButton) findViewById(R.id.avator6);
         ImageButton avator7 = (ImageButton) findViewById(R.id.avator7);
         ImageButton avator8 = (ImageButton) findViewById(R.id.avator8);
-        avatorList = new ImageButton[]{avator1, avator1, avator2, avator3, avator4, avator5, avator6, avator7, avator8};
+        avatarList = new ImageButton[]{avator1, avator1, avator2, avator3, avator4, avator5, avator6, avator7, avator8};
 
-        selectedAvator = 1;
-        avatorList[1].setColorFilter(Color.argb(155, 185, 185, 185));
+        selectedAvatar = 1;
+        avatarList[1].setColorFilter(Color.argb(155, 185, 185, 185));
 
         avator1.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
-                                           selectedAvator = 1;
+                                           selectedAvatar = 1;
                                            highlightButton();
                                        }
                                    }
@@ -147,7 +146,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         avator2.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
-                                           selectedAvator = 2;
+                                           selectedAvatar = 2;
                                            highlightButton();
                                        }
                                    }
@@ -156,7 +155,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         avator3.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
-                                           selectedAvator = 3;
+                                           selectedAvatar = 3;
                                            highlightButton();
                                        }
                                    }
@@ -165,7 +164,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         avator4.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
-                                           selectedAvator = 4;
+                                           selectedAvatar = 4;
                                            highlightButton();
                                        }
                                    }
@@ -173,7 +172,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         avator5.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
-                                           selectedAvator = 5;
+                                           selectedAvatar = 5;
                                            highlightButton();
                                        }
                                    }
@@ -181,7 +180,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         avator6.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
-                                           selectedAvator = 6;
+                                           selectedAvatar = 6;
                                            highlightButton();
                                        }
                                    }
@@ -189,7 +188,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         avator7.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
-                                           selectedAvator = 7;
+                                           selectedAvatar = 7;
                                            highlightButton();
                                        }
                                    }
@@ -197,7 +196,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         avator8.setOnClickListener(new View.OnClickListener() {
                                        @Override
                                        public void onClick(View v) {
-                                           selectedAvator = 8;
+                                           selectedAvatar = 8;
                                            highlightButton();
                                        }
                                    }
@@ -207,35 +206,35 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     //highlights selected avator
     public void highlightButton() {
         resetFilter();
-        if (selectedAvator == 1) {
-            avatorList[1].setColorFilter(Color.argb(155, 185, 185, 185));
-        } else if (selectedAvator == 2) {
-            avatorList[2].setColorFilter(Color.argb(155, 185, 185, 185));
-        } else if (selectedAvator == 3) {
-            avatorList[3].setColorFilter(Color.argb(155, 185, 185, 185));
-        } else if (selectedAvator == 4) {
-            avatorList[4].setColorFilter(Color.argb(155, 185, 185, 185));
-        } else if (selectedAvator == 5) {
-            avatorList[5].setColorFilter(Color.argb(155, 185, 185, 185));
-        } else if (selectedAvator == 6) {
-            avatorList[6].setColorFilter(Color.argb(155, 185, 185, 185));
-        } else if (selectedAvator == 7) {
-            avatorList[7].setColorFilter(Color.argb(155, 185, 185, 185));
-        } else if (selectedAvator == 8) {
-            avatorList[8].setColorFilter(Color.argb(155, 185, 185, 185));
+        if (selectedAvatar == 1) {
+            avatarList[1].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvatar == 2) {
+            avatarList[2].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvatar == 3) {
+            avatarList[3].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvatar == 4) {
+            avatarList[4].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvatar == 5) {
+            avatarList[5].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvatar == 6) {
+            avatarList[6].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvatar == 7) {
+            avatarList[7].setColorFilter(Color.argb(155, 185, 185, 185));
+        } else if (selectedAvatar == 8) {
+            avatarList[8].setColorFilter(Color.argb(155, 185, 185, 185));
         }
     }
 
     //makes sure only 1 filter is highlighted at a time
     public void resetFilter() {
-        avatorList[1].setColorFilter(Color.argb(0, 185, 185, 185));
-        avatorList[2].setColorFilter(Color.argb(0, 185, 185, 185));
-        avatorList[3].setColorFilter(Color.argb(0, 185, 185, 185));
-        avatorList[4].setColorFilter(Color.argb(0, 185, 185, 185));
-        avatorList[5].setColorFilter(Color.argb(0, 185, 185, 185));
-        avatorList[6].setColorFilter(Color.argb(0, 185, 185, 185));
-        avatorList[7].setColorFilter(Color.argb(0, 185, 185, 185));
-        avatorList[8].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatarList[1].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatarList[2].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatarList[3].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatarList[4].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatarList[5].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatarList[6].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatarList[7].setColorFilter(Color.argb(0, 185, 185, 185));
+        avatarList[8].setColorFilter(Color.argb(0, 185, 185, 185));
     }
 
     private void toggleSignUp() {
@@ -361,7 +360,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, userName, selectedAvator);
+            mAuthTask = new UserLoginTask(email, password, userName, selectedAvatar);
             mAuthTask.execute();
         }
     }
