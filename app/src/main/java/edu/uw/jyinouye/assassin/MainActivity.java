@@ -403,9 +403,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-        player.setLocation(location);
-        mLastLocation = location;
-        updatePlayerMarkers();
+        if(!player.getIsDead() && player.getIsPlaying()) {
+            player.setLocation(location);
+            mLastLocation = location;
+            updatePlayerMarkers();
+        }
     }
 
     private void startGame() {
@@ -502,6 +504,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     player.setTargetuid(databasePlayer.getTargetuid());
                     // if player is dead
                     if(databasePlayer.getIsDead()) {
+                        player.setisPlaying(false);
+                        player.setIsDead(true);
                         dataSnapshot.getRef().setValue(null);
                         AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                                 .setTitle("You were killed!")
