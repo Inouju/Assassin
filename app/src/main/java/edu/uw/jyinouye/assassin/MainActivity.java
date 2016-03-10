@@ -401,10 +401,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // shuffle players,
         Collections.shuffle(players);
         for(int i = 0; i < players.size() - 1; i++) {
+            if(players.get(i + 1).getUid() == null) {
+                Log.v(TAG, "Null");
+            }
             players.get(i).setTarget(players.get(i + 1).getUid());
         }
-        players.get(players.size() - 1).setUid(players.get(0).getUid());
-        Log.v(TAG, players.toString());
+        players.get(players.size() - 1).setTarget(players.get(0).getUid());
+        Log.v(TAG, "Last player in chain: " + players.get(players.size() - 1).getEmail());
     }
 
     private void updatePlayerMarkers() {
@@ -413,11 +416,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v(TAG, "Attempting to update player markers. #Players = " + playersCopy.size());
         for(Player p : playersCopy) {
             if (!p.getEmail().equals(player.getEmail())) {
-                mMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                        .title(p.getEmail())
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_player_marker))
-                );
+                if(player.getTargetuid() != null && player.getTargetuid().equals(p.getUid())) {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                            .title(p.getEmail())
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_target_marker))
+                    );
+                } else {
+                    mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                            .title(p.getEmail())
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_player_marker))
+                    );
+                }
+
                 checkRange(p);
                 Log.v(TAG, "Player: " + p.getEmail() + ", location " + p.getLatitude() + ", " + p.getLongitude());
             }
