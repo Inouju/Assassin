@@ -50,8 +50,11 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.uw.jyinouye.assassin.fragments.ChatFragment;
@@ -309,6 +312,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mProfileFragment)
                         .hide(mMapFragment);
                 break;
+            case R.id.admin_start_game:
+                startGame();
+                break;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
@@ -391,6 +397,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         updatePlayerMarkers();
     }
 
+    private void startGame() {
+        List<Player> players = new ArrayList<>();
+        for(Player p : this.players.values()) {
+            players.add(p);
+            p.setRef(assassin.getGroup());
+        }
+        // shuffle players,
+        Collections.shuffle(players);
+        for(int i = 0; i < players.size() - 1; i++) {
+            players.get(i).setTargetuid(players.get(i + 1).getUid());
+        }
+        players.get(players.size() - 1).setUid(players.get(0).getUid());
+        Log.v(TAG, players.toString());
+    }
+
     private void updatePlayerMarkers() {
         mMap.clear();
         Collection<Player> playersCopy = players.values();
@@ -413,7 +434,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         l.setLatitude(p.getLatitude());
         l.setLongitude(p.getLongitude());
         float distance = l.distanceTo(mLastLocation);
-        if(distance < .1) {
+        // if distance is less than 15 meters
+        if(distance < 15) {
             Toast toast = Toast.makeText(this, p.getEmail() + " is in range", Toast.LENGTH_LONG);
             toast.show();
         }
