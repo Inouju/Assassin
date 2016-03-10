@@ -1,5 +1,7 @@
 package edu.uw.jyinouye.assassin.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Created by iguest on 3/9/16.
  */
@@ -26,5 +28,10 @@ public class Ranking {
 
     public String getUsername() {
         return userName;
+    }
+
+    //@JsonIgnore
+    public long getKills() {
+        return kills;
     }
 }

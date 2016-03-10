@@ -15,10 +15,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.uw.jyinouye.assassin.Assassin;
 import edu.uw.jyinouye.assassin.Player;
@@ -37,6 +41,7 @@ public class LeaderboardFragment extends Fragment {
     private Firebase mPlayerGroup;
     private ListView listView;
     private LeaderboardAdapter mLeaderboardAdapter;
+    private List<Ranking> rankings;
     //private ChatListAdapter mChatListAdapter;
 
 
@@ -48,8 +53,26 @@ public class LeaderboardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        rankings = new ArrayList<Ranking>();
         Assassin assassin = (Assassin) getActivity().getApplication();
         mPlayers = assassin.getRef().child("players");
+        mPlayers.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot dater : dataSnapshot.getChildren()) {
+                    String email = (String) dater.child("email").getValue();
+                    Long kills = (Long) dater.child("kills").getValue();
+                    String username = (String) dater.child("username").getValue();
+                    Ranking rank = new Ranking(email, username, kills);
+                    rankings.add(rank);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
         Log.v(TAG, "mPlayers: " + mPlayers);
     }
 
@@ -68,7 +91,8 @@ public class LeaderboardFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        mLeaderboardAdapter = new LeaderboardAdapter(mPlayers, getActivity(), R.layout.fragment_leaderboard, "TEST");
+        /*
+        mLeaderboardAdapter = new LeaderboardAdapter(mPlayers.limitToLast(50), getActivity(), R.layout.fragment_leaderboard, "TEST");
         listView.setAdapter(mLeaderboardAdapter);
         mLeaderboardAdapter.registerDataSetObserver(new DataSetObserver() {
             @Override
@@ -77,6 +101,7 @@ public class LeaderboardFragment extends Fragment {
                 listView.setSelection(mLeaderboardAdapter.getCount() - 1);
             }
         });
+        */
     }
 
     @Override
