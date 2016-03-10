@@ -296,7 +296,8 @@ public class JoinGroupActivity extends AppCompatActivity implements ValueEventLi
         }
 
         private void startMapsActivity() {
-            startActivity(new Intent(JoinGroupActivity.this, MainActivity.class));
+            startActivity(new Intent(JoinGroupActivity.this, MainActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         }
 
         @Override
