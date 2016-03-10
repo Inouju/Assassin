@@ -143,7 +143,7 @@ public class Assassin extends Application implements ValueEventListener {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (counter2[0] < 1) {
-                    if(dataSnapshot.hasChild("isPlaying") && dataSnapshot.child("isPlaying").getValue() == true) {
+                    if(dataSnapshot.hasChild("isPlaying") && (Boolean)dataSnapshot.child("isPlaying").getValue() == true) {
                         Long lat = (Long) dataSnapshot.child("latitude").getValue();
                         Long longit = (Long) dataSnapshot.child("longitude").getValue();
                         Location r = new Location("enemy user");
