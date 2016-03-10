@@ -498,9 +498,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     player.setLongitude((double) lng);
                 }
                 players.put(dataSnapshot.getKey(), player);
+<<<<<<< HEAD
                 if(mLastLocation != null) {
                     onLocationChanged(mLastLocation);
                 }
+=======
+>>>>>>> eb9d229cd0420da403ac0c4db2d188e74d9e4c1a
             }
 
             @Override
