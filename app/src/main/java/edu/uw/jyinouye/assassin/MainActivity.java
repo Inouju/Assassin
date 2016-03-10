@@ -493,6 +493,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     player.setTargetuid(databasePlayer.getTargetuid());
                     if(databasePlayer.getIsDead()) {
                         Log.v(TAG, "DEAD!!!!");
+                        Toast.makeText(MainActivity.this, "You ded", Toast.LENGTH_LONG).show();
                         new AlertDialog.Builder(MainActivity.this)
                                 .setTitle("You were killed!")
                                 .setPositiveButton("Leave game", new DialogInterface.OnClickListener() {
@@ -502,8 +503,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     }
                                 })
                                 .create();
+                    } else {
+                        Log.v(TAG, "NOT DEAD!");
                     }
-                    Log.v(TAG, "NOT DEAD!");
                 }
             }
 
