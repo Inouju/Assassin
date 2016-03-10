@@ -141,6 +141,18 @@ public class Assassin extends Application implements ValueEventListener {
         if(mPlayer.getTargetuid() != null) {
             final Firebase target = groupRef.child("players").child(mPlayer.getTargetuid());
             target.child("isDead").setValue(true);
+            target.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    mPlayer.setTargetuid(dataSnapshot.getValue(Player.class).getTargetuid());
+                    Log.v(TAG, "New target: " + mPlayer.getTargetuid());
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
             //final int[] counter2 = {0};
 //            ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
 //                @Override

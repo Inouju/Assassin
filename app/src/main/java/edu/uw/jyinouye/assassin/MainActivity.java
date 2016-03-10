@@ -481,7 +481,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            public void onChildChanged(final DataSnapshot dataSnapshot, String s) {
                 Player databasePlayer = dataSnapshot.getValue(Player.class);
                 Log.v(TAG, "databaseplayer lat: " + dataSnapshot.child("latitude").getValue());
                 Log.v(TAG, "databaseplayer lng:" + dataSnapshot.child("longitude").getValue());
@@ -492,19 +492,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if(databasePlayer.getUid().equals(player.getUid())) {
                     player.setTargetuid(databasePlayer.getTargetuid());
                     if(databasePlayer.getIsDead()) {
-                        Log.v(TAG, "DEAD!!!!");
-                        Toast.makeText(MainActivity.this, "You ded", Toast.LENGTH_LONG).show();
-                        new AlertDialog.Builder(MainActivity.this)
+                        AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                                 .setTitle("You were killed!")
+                                .setMessage("DEAD")
                                 .setPositiveButton("Leave game", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        dataSnapshot.getRef().setValue(null);
                                         finish();
                                     }
                                 })
                                 .create();
-                    } else {
-                        Log.v(TAG, "NOT DEAD!");
+                        dialog.show();
+                        Log.v(TAG, dialog.toString());
+
                     }
                 }
             }
