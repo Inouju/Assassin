@@ -22,6 +22,7 @@ import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.uw.jyinouye.assassin.Assassin;
@@ -40,10 +41,10 @@ public class LeaderboardFragment extends Fragment {
     private Firebase mPlayers;
     private Firebase mPlayerGroup;
     private ListView listView;
-    private LeaderboardAdapter mLeaderboardAdapter;
+    private ArrayAdapter LeaderboardAdapter;
     private List<Ranking> rankings;
     //private ChatListAdapter mChatListAdapter;
-
+    private OnFragmentInteractionListener mListener;
 
     public LeaderboardFragment() {
         // Required empty public constructor
@@ -91,28 +92,28 @@ public class LeaderboardFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        /*
-        mLeaderboardAdapter = new LeaderboardAdapter(mPlayers.limitToLast(50), getActivity(), R.layout.fragment_leaderboard, "TEST");
-        listView.setAdapter(mLeaderboardAdapter);
-        mLeaderboardAdapter.registerDataSetObserver(new DataSetObserver() {
-            @Override
-            public void onChanged() {
-                super.onChanged();
-                listView.setSelection(mLeaderboardAdapter.getCount() - 1);
-            }
-        });
-        */
+        LeaderboardAdapter = new ArrayAdapter(getActivity(), R.layout.list_item,R.id.txtItem);
+        listView.setAdapter(LeaderboardAdapter);
+        Collections.sort(rankings);
+        for(int i = 0;i < rankings.size();i++) {
+            LeaderboardAdapter.insert(rankings.get(i),0);
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        //mLeaderboardAdapter.cleanup();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -120,20 +121,8 @@ public class LeaderboardFragment extends Fragment {
         super.onDetach();
     }
 
-    private class LeaderboardAdapter extends FirebaseListAdapter<Ranking> {
-
-        private String mUserId;
-
-        public LeaderboardAdapter(Query ref, Activity activity, int layout, String mUserId) {
-            super(ref, Ranking.class, layout, activity);
-            this.mUserId = mUserId;
-        }
-
-        @Override
-        protected void populateView(View v, Ranking ranking) {
-            Log.v("HUE","HUEHUEHUEHUEHUEHUE");
-        }
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
-
-
 }
