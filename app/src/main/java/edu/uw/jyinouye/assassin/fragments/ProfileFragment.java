@@ -61,19 +61,18 @@ public class ProfileFragment extends Fragment {
         deaths.setText(player.getDeaths() + "");
         currency.setText(player.getCurrency() + "");
 
-
+        //get opponent information from firebase
         String targetUid = player.getTargetuid();
-        //Log.v(TAG, "Uber targetUid: " + targetUid);
         Firebase target = assassin.getGroup().child("players").child(player.getTargetuid());
-        //Log.v(TAG, "Santa target: " + target);
         target.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //Log.v(TAG, "Pizza: " + dataSnapshot.getValue());
                 int selectedAvatar2 = dataSnapshot.child("avator").getValue(Integer.class);
+                String name = dataSnapshot.child("userName").getValue(String.class);
+                TextView target_name = (TextView) rootView.findViewById(R.id.target_name);
+                target_name.setText(name);
                 ImageView target_image = (ImageView) rootView.findViewById(R.id.target_image);
                 setProfileImage(target_image, selectedAvatar2, rootView);
-                //Log.v(TAG, "Mario selectedAvatar: " + selectedAvatar);
             }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
@@ -84,7 +83,7 @@ public class ProfileFragment extends Fragment {
         return rootView;
     }
 
-    //sets profile avatar
+    //sets profile avatars
     public void setProfileImage(ImageView image, int selectedAvator, View rootView) {
 
         if (selectedAvator == 1) {

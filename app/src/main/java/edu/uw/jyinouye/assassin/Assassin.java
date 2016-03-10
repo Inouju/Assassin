@@ -58,9 +58,7 @@ public class Assassin extends Application implements ValueEventListener {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         String username = snapshot.child("username").getValue(String.class);
-                        Log.v(TAG, "username TEST: " + username);
                         if (username != null) {
-                            Log.v(TAG, "username TEST2");
                             mPlayer.setUserName(username);
                         }
                     }

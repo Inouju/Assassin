@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mProfileFragment = new ProfileFragment();
         fragmentManager
-        .beginTransaction()
+                .beginTransaction()
                 .add(R.id.flContent, mMapFragment)
                 .add(R.id.flContent, mChatFragment)
                 .add(R.id.flContent, mLeaderboardFragment)
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v) {
                 boolean result = assassin.killPressed();
                 if(result) {
-                   // mLeaderboardFragment.refresh();
+                    // mLeaderboardFragment.refresh();
                 }
                 Log.v("hi", assassin.getPlayer().getKills()+"");
             }
@@ -501,16 +501,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.v(TAG, "Target: " + player.getTargetuid());
                 if(player.getTargetuid().equals(p.getUid())) {
                     mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                            .title(p.getEmail())
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_target_marker))
+                                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                    .title(p.getEmail())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_target_marker))
                     );
                     checkRange(p);
                 } else {
                     mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(p.getLatitude(), p.getLongitude()))
-                            .title(p.getEmail())
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_player_marker))
+                                    .position(new LatLng(p.getLatitude(), p.getLongitude()))
+                                    .title(p.getEmail())
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_player_marker))
                     );
                 }
                 Log.v(TAG, "Player: " + p.getEmail() + ", location " + p.getLatitude() + ", " + p.getLongitude());
@@ -534,6 +534,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             //disallow player to kill other play due to range being too high
             killButton.setEnabled(false);
+            Log.v(TAG, "VISIBLE");
+            killButton.setVisibility(View.VISIBLE);
         }
     }
 
