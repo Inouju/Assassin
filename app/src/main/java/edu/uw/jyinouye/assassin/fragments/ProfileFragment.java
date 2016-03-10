@@ -19,8 +19,6 @@ import edu.uw.jyinouye.assassin.R;
  */
 public class ProfileFragment extends Fragment {
 
-
-
     private static final String TAG = "ProfileFragment";
     private Player player;
 

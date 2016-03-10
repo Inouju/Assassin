@@ -217,8 +217,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // The action bar home/up action should open or close the drawer.
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawer.openDrawer(GravityCompat.START);
+                return true;
+        }
 
+        return super.onOptionsItemSelected(item);
+    }
 
+    //JASON, does this affect the start button???
+    /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
@@ -236,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return false;
     }
+    */
 
     private void setupDrawerContent(NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
@@ -290,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mChatFragment)
                         .hide(mLeaderboardFragment)
                         .hide(mMapFragment)
-                        .hide(mShopFragment)
+                        .hide(mProfileFragment)
                         .commit();
                 setTitle("Profile");
                 mDrawer.closeDrawers();
@@ -326,14 +339,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void selectDrawerItem(MenuItem menuItem) {
-
         if(menuItem == null) {
             if(mLastMenuItem != null) {
                 mLastMenuItem.setChecked(false);
             }
             return;
         }
-
         mLastMenuItem = menuItem;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -357,9 +368,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
             case R.id.nav_profile_fragment:
                 ft.show(mProfileFragment)
+                        .hide(mChatFragment)
                         .hide(mMapFragment)
-                        .hide(mLeaderboardFragment)
-                        .hide(mProfileFragment);
+                        .hide(mLeaderboardFragment);
                 killButton.setVisibility(View.GONE);
                 break;
             case R.id.nav_leaderboard_fragment:

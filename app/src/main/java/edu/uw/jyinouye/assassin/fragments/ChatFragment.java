@@ -34,6 +34,8 @@ import edu.uw.jyinouye.assassin.util.FirebaseListAdapter;
  */
 public class ChatFragment extends Fragment {
 
+    private static final String TAG = "ChatFragment";
+
     private String mUserName;
     private Firebase mGroup;
     private Firebase mGroupChat;
@@ -51,6 +53,7 @@ public class ChatFragment extends Fragment {
 
         Assassin assassin = (Assassin) getActivity().getApplication();
         mUserName = assassin.getPlayer().getUserName();
+        Log.v(TAG, "mUsername: " + mUserName);
         mGroup = assassin.getGroup();
         mGroupChat = mGroup.child("chat");
     }
