@@ -501,7 +501,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     databasePlayer.setTargetuid(databasePlayer.getTargetuid());
                     players.put(dataSnapshot.getKey(), databasePlayer);
                 }
-                if(databasePlayer.getUid().equals(player.getUid())) {
+                if(databasePlayer != null && databasePlayer.getUid().equals(player.getUid())) {
                     player.setTargetuid(databasePlayer.getTargetuid());
                     // if player is dead
                     if(databasePlayer.getIsDead()) {
