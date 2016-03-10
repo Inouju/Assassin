@@ -9,6 +9,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.client.snapshot.BooleanNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -167,7 +168,7 @@ public class Assassin extends Application implements ValueEventListener {
 //                public void onDataChange(DataSnapshot dataSnapshot) {
 
                     if (counter2[0] < 1) {
-                        if (dataSnapshot.hasChild("isPlaying") && (Boolean) dataSnapshot.child("isPlaying").getValue() == true) {
+                        if (dataSnapshot.hasChild("isPlaying") && dataSnapshot.child("isPlaying").getValue(Boolean.class)) {
                                 final Integer value2 = (int) (long) dataSnapshot.child("deaths").getValue();
                                 mPlayer.incKill();
                                 final int[] counter = {0};
@@ -176,7 +177,7 @@ public class Assassin extends Application implements ValueEventListener {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot2) {
                                         if (counter[0] < 1) {
-                                            Integer value = (int) (long) dataSnapshot2.getValue();
+                                            Integer value = dataSnapshot2.getValue(Integer.class);
                                             counter[0]++;
                                             playerkill.setValue(value + 1);
                                         }
