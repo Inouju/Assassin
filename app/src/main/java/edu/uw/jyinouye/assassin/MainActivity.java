@@ -268,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         TextView profile_email = (TextView) headerView.findViewById(R.id.profile_email_text);
         profile_email.setText(assassin.getPlayer().getEmail());
+        setProfileImage(headerView);
 
         View profileView = headerView.findViewById(R.id.chosen_account_content_view);
         profileView.setOnClickListener(new View.OnClickListener() {
@@ -288,6 +289,34 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     //gives access to a left side drawr menu
+    public void setProfileImage(View headerView) {
+        Log.v(TAG, "COW");
+
+        int selectedAvator = assassin.getPlayer().getAvator();
+        ImageView profile_image = (ImageView) headerView.findViewById(R.id.profile_image);
+
+        Log.v(TAG, "selectedAvator: " + selectedAvator);
+
+
+        if (selectedAvator == 1) {
+            profile_image.setImageResource(R.drawable.avator1);
+        } else if (selectedAvator == 2) {
+            profile_image.setImageResource(R.drawable.avator2);
+        } else if (selectedAvator == 3) {
+            profile_image.setImageResource(R.drawable.avator3);
+        } else if (selectedAvator == 4) {
+            profile_image.setImageResource(R.drawable.avator4);
+        } else if (selectedAvator == 5) {
+            profile_image.setImageResource(R.drawable.avator5);
+        } else if (selectedAvator == 6) {
+            profile_image.setImageResource(R.drawable.avator6);
+        } else if (selectedAvator == 7) {
+            profile_image.setImageResource(R.drawable.avator7);
+        } else if (selectedAvator == 8) {
+            profile_image.setImageResource(R.drawable.avator8);
+        }
+    }
+
     public void selectDrawerItem(MenuItem menuItem) {
 
         if(menuItem == null) {
@@ -562,15 +591,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
 
-<<<<<<< HEAD
                 //Winner if last player
-=======
             }
 
             @Override
             public void onChildRemoved(final DataSnapshot dataSnapshot) {
                 players.remove(dataSnapshot.getKey());
->>>>>>> 599ee37b9106d2f7785935272d8cb6a73a57caad
                 Log.v(TAG, "Target: " + player.getTargetuid());
                 // check if player is last remaining
                 if(winnerFlag && player.getTargetuid().equals(player.getUid())) {
