@@ -485,6 +485,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if(databasePlayer.getUid().equals(player.getUid())) {
                     player.setTargetuid(databasePlayer.getTargetuid());
                     if(databasePlayer.getIsDead()) {
+                        Log.v(TAG, "DEAD!!!!");
                         new AlertDialog.Builder(MainActivity.this)
                                 .setTitle("You were killed!")
                                 .setPositiveButton("Leave game", new DialogInterface.OnClickListener() {
@@ -495,6 +496,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 })
                                 .create();
                     }
+                    Log.v(TAG, "NOT DEAD!");
                 }
             }
 
