@@ -1,14 +1,9 @@
 package edu.uw.jyinouye.assassin;
 
-import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
 
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by colec on 3/6/2016.
@@ -18,7 +13,7 @@ public class Player {
     private Firebase groupRef;
 
     private String uid;
-    private String targetuid;
+    private String target;
     private String email;
     private String userName;
     private String groupName;
@@ -43,7 +38,7 @@ public class Player {
         this.kills = 0;
         this.deaths = 0;
         this.currency = 0;
-        this.targetuid = "YOU!";
+        this.target = "YOU!";
         this.isPlaying = true;
     }
 
@@ -74,11 +69,11 @@ public class Player {
         this.uid = uid;
     }
 
-    public String getTargetuid() { return targetuid; }
+    public String getTarget() { return target; }
 
-    public void setTargetuid(String tuid) {
-        groupRef.child("players").child(uid).child("targetUid").setValue(tuid);
-        this.targetuid = tuid;
+    public void setTarget(String tuid) {
+        groupRef.child("players").child(uid).child("target").setValue(tuid);
+        this.target = tuid;
     }
 
     public String getEmail() {
@@ -125,7 +120,7 @@ public class Player {
         return longitude;
     }
 
-    public boolean isAdmin() {
+    public boolean getAdmin() {
         return isAdmin;
     }
 

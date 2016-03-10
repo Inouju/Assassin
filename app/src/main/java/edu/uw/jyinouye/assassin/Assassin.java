@@ -137,13 +137,13 @@ public class Assassin extends Application implements ValueEventListener {
         final Location l = new Location("");
         l.setLatitude(mPlayer.getLatitude());
         l.setLongitude(mPlayer.getLongitude());
-        final Firebase target = groupRef.child("players").child(mPlayer.getTargetuid());
+        final Firebase target = groupRef.child("players").child(mPlayer.getTarget());
         final int[] counter2 = {0};
         ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (counter2[0] < 1) {
-                    if(dataSnapshot.hasChild("isPlaying") && dataSnapshot.child("isPlaying").getValue() == true) {
+                    if(dataSnapshot.hasChild("isPlaying") && dataSnapshot.child("isPlaying").getValue(boolean.class)) {
                         Long lat = (Long) dataSnapshot.child("latitude").getValue();
                         Long longit = (Long) dataSnapshot.child("longitude").getValue();
                         Location r = new Location("enemy user");
@@ -227,8 +227,9 @@ public class Assassin extends Application implements ValueEventListener {
                     mPlayer.setDeaths(player.getDeaths());
                     mPlayer.setCurrency(player.getCurrency());
                     mPlayer.setUserName(player.getUserName());
-                    mPlayer.setTargetuid(player.getTargetuid());
+                    mPlayer.setTarget(player.getTarget());
                     mPlayer.setisPlaying(true);
+                    mPlayer.setAdmin(false);
                 }
 
                 @Override
