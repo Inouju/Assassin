@@ -480,20 +480,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Player player = dataSnapshot.getValue(Player.class);
-                player.setLatitude((double)dataSnapshot.child("latitude").getValue());
-                player.setLongitude((double)dataSnapshot.child("longitude").getValue());
-                players.put(dataSnapshot.getKey(), player);
+                Object lat = dataSnapshot.child("latitude").getValue();
+                Object lng = dataSnapshot.child("longitude").getValue();
+                if (lat != null && lng != null) {
+                    player.setLatitude((double) lat);
+                    player.setLongitude((double) lng);
+                    players.put(dataSnapshot.getKey(), player);
+                }
             }
 
             @Override
             public void onChildChanged(final DataSnapshot dataSnapshot, String s) {
                 Player databasePlayer = dataSnapshot.getValue(Player.class);
-                Log.v(TAG, "databaseplayer lat: " + dataSnapshot.child("latitude").getValue());
-                Log.v(TAG, "databaseplayer lng:" + dataSnapshot.child("longitude").getValue());
-                databasePlayer.setLatitude((double) dataSnapshot.child("latitude").getValue());
-                databasePlayer.setLongitude((double) dataSnapshot.child("longitude").getValue());
-                databasePlayer.setTargetuid(databasePlayer.getTargetuid());
-                players.put(dataSnapshot.getKey(), databasePlayer);
+                Object lat = dataSnapshot.child("latitude").getValue();
+                Object lng = dataSnapshot.child("longitude").getValue();
+                if (lat != null && lng != null) {
+                    databasePlayer.setLatitude((double) lat);
+                    databasePlayer.setLongitude((double) lng);
+                    databasePlayer.setTargetuid(databasePlayer.getTargetuid());
+                    players.put(dataSnapshot.getKey(), databasePlayer);
+                }
                 if(databasePlayer.getUid().equals(player.getUid())) {
                     player.setTargetuid(databasePlayer.getTargetuid());
                     // if player is dead
