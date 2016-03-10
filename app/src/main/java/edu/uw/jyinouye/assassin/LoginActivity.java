@@ -102,6 +102,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        //login button
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -110,6 +111,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        //allows user to easily switch between 
         Button mSignUpButton = (Button) findViewById(R.id.toggle_sign_up);
         mSignUpButton.setOnClickListener(new OnClickListener() {
             @Override
