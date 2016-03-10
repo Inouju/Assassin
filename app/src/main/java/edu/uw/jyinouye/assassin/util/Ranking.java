@@ -39,7 +39,7 @@ public class Ranking implements Comparable{
     @Override
     public int compareTo(Object another) {
         Ranking r = (Ranking)another;
-        return (int)this.kills - (int)r.getKills();
+        return (int)r.getKills() - (int)this.kills;
     }
 
     //tosting to have the array adapter be called
