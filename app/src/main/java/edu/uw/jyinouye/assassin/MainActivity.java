@@ -219,11 +219,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
         switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawer.openDrawer(GravityCompat.START);
+            case R.id.admin_start_game:
+                startGame();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -326,18 +325,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mShopFragment);
                 killButton.setVisibility(View.GONE);
                 break;
-            case R.id.nav_shop_fragment:
-                ft.show(mShopFragment)
-                        .hide(mChatFragment)
-                        .hide(mLeaderboardFragment)
-                        .hide(mProfileFragment)
-                        .hide(mMapFragment);
-                killButton.setVisibility(View.GONE);
-                break;
-            case R.id.admin_start_game:
-                startGame();
-                mDrawer.closeDrawers();
-                return;
             default:
                 ft.show(mMapFragment)
                         .hide(mChatFragment)
