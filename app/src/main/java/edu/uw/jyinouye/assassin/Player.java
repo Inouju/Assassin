@@ -1,9 +1,15 @@
 package edu.uw.jyinouye.assassin;
 
+import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by colec on 3/6/2016.
@@ -13,7 +19,7 @@ public class Player {
     private Firebase groupRef;
 
     private String uid;
-    private String target;
+    private String targetuid;
     private String email;
     private String userName;
     private String groupName;
@@ -38,9 +44,37 @@ public class Player {
         this.kills = 0;
         this.deaths = 0;
         this.currency = 0;
-        this.target = "YOU!";
+        this.targetuid = "YOU!";
         this.isPlaying = true;
     }
+
+    public long getCurrency() { return currency; }
+
+    public long getKills() { return kills; }
+
+    public long getDeaths() { return deaths; }
+
+    public String getUid() { return uid; }
+
+    public String getEmail() { return email; }
+
+    public String getUserName() { return userName;}
+
+    public String getGroupName() { return groupName; }
+
+    public String getTargetuid() { return targetuid; }
+
+    @JsonIgnore
+    public Location getLocation() { return location; }
+
+    public double getLatitude() { return latitude; }
+
+    public double getLongitude() { return longitude; }
+
+    public boolean getAdmin() { return isAdmin; }
+
+    public boolean getIsPlaying() { return isPlaying; }
+
 
     public void setRef(Firebase ref) {
         groupRef = ref;
@@ -57,43 +91,21 @@ public class Player {
 
     public void incDeath() { deaths = deaths + 1; }
 
-    public long getCurrency() { return currency; }
-
-    public long getKills() { return kills; }
-
-    public long getDeaths() { return deaths; }
-
-    public String getUid() { return uid; }
-
     public void setUid(String uid) {
         this.uid = uid;
     }
 
-    public String getTarget() { return target; }
-
-    public void setTarget(String tuid) {
-        groupRef.child("players").child(uid).child("target").setValue(tuid);
-        this.target = tuid;
-    }
-
-    public String getEmail() {
-        return email;
+    public void setTargetuid(String tuid) {
+        //groupRef.child("players").child(uid).child("targetuid").setValue(tuid);
+        this.targetuid = tuid;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getGroupName() {
-        return groupName;
     }
 
     public void setGroupName(String groupName) {
@@ -112,18 +124,6 @@ public class Player {
         this.currency = currency;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public boolean getAdmin() {
-        return isAdmin;
-    }
-
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
@@ -138,8 +138,8 @@ public class Player {
 
     public void setLocation(Location location) {
         Log.v("PlayerObject", "set location: " + location.getLatitude() + " " + location.getLongitude());
-        groupRef.child("players").child(uid).child("latitude").setValue((double)location.getLatitude());
-        groupRef.child("players").child(uid).child("longitude").setValue((double)location.getLongitude());
+        groupRef.child("players").child(uid).child("latitude").setValue((double) location.getLatitude());
+        groupRef.child("players").child(uid).child("longitude").setValue((double) location.getLongitude());
         this.location = location;
     }
 
