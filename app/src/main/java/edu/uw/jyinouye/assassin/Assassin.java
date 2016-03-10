@@ -168,7 +168,7 @@ public class Assassin extends Application implements ValueEventListener {
                                 mPlayer.incKill();
                                 final int[] counter = {0};
                                 final Firebase playerkill = ref.child("players").child(mPlayer.getUid()).child("kills");
-                                ValueEventListener listener = playerkill.addValueEventListener(new ValueEventListener() {
+                                playerkill.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot2) {
                                         if (counter[0] < 1) {
