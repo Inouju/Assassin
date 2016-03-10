@@ -78,10 +78,12 @@ public class Assassin extends Application implements ValueEventListener {
 
     }
 
+    //gets the player's information
     public Assassin getInstance() {
         return this.singleton;
     }
 
+    //handles the signup for the player
     public void signup(final String email, final String password, final String userName) {
         ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
             @Override
@@ -108,6 +110,7 @@ public class Assassin extends Application implements ValueEventListener {
         });
     }
 
+    //player selects login
     public void login(String email, String password) {
         mPlayer.setEmail(email);
         ref.authWithPassword(email, password, authResultHandler);
@@ -191,26 +194,6 @@ public class Assassin extends Application implements ValueEventListener {
         ref.child("groups").addValueEventListener(mListener);
     }
 
-    /*
-    //gets the user
-    final Firebase target = groupRef.child("players").child(mPlayer.getUid());
-    target.addListenerForSingleValueEvent(new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            if(dataSnapshot.getChildrenCount() == 1){
-                Log.v(TAG, "THERES SOMEONE HERE!@!!!@@@KJ@LJ@LJH@KG@KGH@JKLH@LKJH@LKJH@KLJH@LKJ@HKLH@KLJH@KLJH@KLH@KLJH@KLH@");
-            } else {
-                Log.v(TAG,"OH SHITTTTTT GFUCK MY AAAAAAAARSE");
-            }
-        }
-
-        @Override
-        public void onCancelled(FirebaseError firebaseError) {
-
-        }
-    });
-    */
-
     // callback when data in groupRef object gets changed
     @Override
     public void onDataChange(final DataSnapshot dataSnapshot) {
@@ -221,31 +204,6 @@ public class Assassin extends Application implements ValueEventListener {
             final Firebase playersRef = groupRef.child("players");
             playersRef.child(this.mPlayer.getUid()).setValue(this.mPlayer);
 
-//            playersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-//                        Player newPlayer = postSnapshot.getValue(Player.class);
-//                        Log.v(TAG, String.valueOf(dataSnapshot.getChildrenCount()));
-//                        if (dataSnapshot.getChildrenCount() == 1 || newPlayer.getAdmin()) {
-//                            Log.v(TAG, "THERES SOMEONE HERE!@!!!@@@KJ@LJ@LJH@KG@KGH@JKLH@LKJH@LKJH@KLJH@LKJ@HKLH@KLJH@KLJH@KLH@KLJH@KLH@");
-//                            if(newPlayer.getUid().equals(mPlayer.getUid())) {
-//                                mPlayer.setAdmin(true);
-//                                playersRef.child(newPlayer.getUid()).child("admin").setValue(true);
-//                            }
-//
-//                        } //else {
-//                            //Log.v(TAG, "OH SHITTTTTT GFUCK MY AAAAAAAARSE");
-//                            //newPlayer.setAdmin(false);
-//                        //}
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(FirebaseError firebaseError) {
-//
-//                }
-//            });
 
             playersRef.child(this.mPlayer.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
