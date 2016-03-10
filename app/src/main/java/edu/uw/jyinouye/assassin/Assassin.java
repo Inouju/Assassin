@@ -137,24 +137,19 @@ public class Assassin extends Application implements ValueEventListener {
     }
 
     public void killPressed() {
-        final Location l = new Location("");
-        l.setLatitude(mPlayer.getLatitude());
-        l.setLongitude(mPlayer.getLongitude());
-        Log.v("LOCATION",mPlayer.getLatitude()+" "+mPlayer.getLongitude());
+//        final Location l = new Location("");
+//        l.setLatitude(mPlayer.getLatitude());
+//        l.setLongitude(mPlayer.getLongitude());
         if(mPlayer.getTargetuid() != null) {
             final Firebase target = groupRef.child("players").child(mPlayer.getTargetuid());
+            target.child("isDead").setValue(true);
             final int[] counter2 = {0};
             ValueEventListener targetListener = target.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+
                     if (counter2[0] < 1) {
                         if (dataSnapshot.hasChild("isPlaying") && (Boolean) dataSnapshot.child("isPlaying").getValue() == true) {
-                            Long lat = (Long) dataSnapshot.child("latitude").getValue();
-                            Long longit = (Long) dataSnapshot.child("longitude").getValue();
-                            Location r = new Location("enemy user");
-                            r.setLatitude(lat);
-                            r.setLongitude(longit);
-                            if (l.distanceTo(r) < 15) {
                                 final Integer value2 = (int) (long) dataSnapshot.child("deaths").getValue();
                                 mPlayer.incKill();
                                 final int[] counter = {0};
@@ -166,7 +161,6 @@ public class Assassin extends Application implements ValueEventListener {
                                             Integer value = (int) (long) dataSnapshot2.getValue();
                                             counter[0]++;
                                             playerkill.setValue(value + 1);
-                                            target.child("deaths").setValue(value2 + 1);
                                         }
                                     }
 
@@ -175,8 +169,8 @@ public class Assassin extends Application implements ValueEventListener {
 
                                     }
                                 });
-                            }
                         }
+                        counter2[0]++;
                     }
                 }
 

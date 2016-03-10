@@ -1,20 +1,26 @@
 package edu.uw.jyinouye.assassin;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.os.Build;
 import android.support.design.widget.NavigationView;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -24,6 +30,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private MenuItem mLastMenuItem;
-    private Button button;
+    private Button killButton;
 
     private SupportMapFragment mMapFragment;
     private ChatFragment mChatFragment;
@@ -90,6 +97,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        ImageView overlay = (ImageView)findViewById(R.id.main_overlay);
+        overlay.setBackgroundColor(Color.argb(127, 213, 0, 0));
+        overlay.setVisibility(View.GONE);
 
         assassin = ((Assassin)getApplicationContext()).getInstance();
         player = assassin.getPlayer();
@@ -163,8 +174,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(android.R.color.transparent));
         }
-        button = (Button) findViewById(R.id.kill_button);
-        button.setOnClickListener(new View.OnClickListener() {
+        killButton = (Button) findViewById(R.id.kill_button);
+        killButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 assassin.killPressed();
                 Log.v("hi", assassin.getPlayer().getKills()+"");
@@ -286,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mLeaderboardFragment)
                         .hide(mProfileFragment)
                         .hide(mShopFragment);
-                button.setVisibility(View.VISIBLE);
+                killButton.setVisibility(View.VISIBLE);
                 break;
             case R.id.nav_chat_fragment:
                 ft.show(mChatFragment)
@@ -294,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mLeaderboardFragment)
                         .hide(mProfileFragment)
                         .hide(mShopFragment);
-                button.setVisibility(View.GONE);
+                killButton.setVisibility(View.GONE);
                 break;
             case R.id.nav_leaderboard_fragment:
                 ft.show(mLeaderboardFragment)
@@ -302,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mMapFragment)
                         .hide(mProfileFragment)
                         .hide(mShopFragment);
-                button.setVisibility(View.GONE);
+                killButton.setVisibility(View.GONE);
                 break;
             case R.id.nav_shop_fragment:
                 ft.show(mShopFragment)
@@ -310,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mLeaderboardFragment)
                         .hide(mProfileFragment)
                         .hide(mMapFragment);
-                button.setVisibility(View.GONE);
+                killButton.setVisibility(View.GONE);
                 break;
             case R.id.admin_start_game:
                 startGame();
@@ -321,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .hide(mLeaderboardFragment)
                         .hide(mProfileFragment)
                         .hide(mShopFragment);
-                button.setVisibility(View.GONE);
+                killButton.setVisibility(View.GONE);
                 break;
         }
 
@@ -429,6 +440,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .title(p.getEmail())
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_target_marker))
                     );
+                    checkRange(p);
                 } else {
                     mMap.addMarker(new MarkerOptions()
                             .position(new LatLng(p.getLatitude(), p.getLongitude()))
@@ -436,8 +448,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_player_marker))
                     );
                 }
-
-                checkRange(p);
                 Log.v(TAG, "Player: " + p.getEmail() + ", location " + p.getLatitude() + ", " + p.getLongitude());
             }
         }
@@ -452,6 +462,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(distance < 15) {
             Toast toast = Toast.makeText(this, p.getEmail() + " is in range", Toast.LENGTH_LONG);
             toast.show();
+            killButton.setEnabled(true);
+        } else {
+            killButton.setEnabled(false);
         }
     }
 
@@ -472,12 +485,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Player databasePlayer = dataSnapshot.getValue(Player.class);
                 Log.v(TAG, "databaseplayer lat: " + dataSnapshot.child("latitude").getValue());
                 Log.v(TAG, "databaseplayer lng:" + dataSnapshot.child("longitude").getValue());
-                databasePlayer.setLatitude((double)dataSnapshot.child("latitude").getValue());
-                databasePlayer.setLongitude((double)dataSnapshot.child("longitude").getValue());
+                databasePlayer.setLatitude((double) dataSnapshot.child("latitude").getValue());
+                databasePlayer.setLongitude((double) dataSnapshot.child("longitude").getValue());
                 databasePlayer.setTargetuid(databasePlayer.getTargetuid());
                 players.put(dataSnapshot.getKey(), databasePlayer);
                 if(databasePlayer.getUid().equals(player.getUid())) {
                     player.setTargetuid(databasePlayer.getTargetuid());
+                    if(databasePlayer.getIsDead()) {
+                        Log.v(TAG, "DEAD!!!!");
+                        Toast.makeText(MainActivity.this, "You ded", Toast.LENGTH_LONG).show();
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("You were killed!")
+                                .setPositiveButton("Leave game", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                })
+                                .create();
+                    } else {
+                        Log.v(TAG, "NOT DEAD!");
+                    }
                 }
             }
 
