@@ -135,7 +135,7 @@ public class Assassin extends Application implements ValueEventListener {
         mPlayer.setRef(this.groupRef);
         mPlayer.setisPlaying(true);
         mPlayer.setAdmin(false);
-        mPlayer.setTargetuid("TEST TARGET UID");
+        mPlayer.setTargetuid("4b1a491c-262d-4331-abf3-56bd5a2056a5");  ///FIX LOGIC//////////////////////////////////////
         Log.v(TAG, "Join Group");
         // check that password is correct
         groupRef.addListenerForSingleValueEvent(this);

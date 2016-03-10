@@ -12,17 +12,41 @@
 
     <TextView
         android:id="@+id/profile_name"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:text="Test User"
+        android:text="Username"
         android:layout_marginBottom="15dp"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:gravity="center_horizontal" />
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/profile_image" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginBottom="15dp">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/profile_image"
+            android:src="@drawable/avator1"
+            android:layout_marginRight="20dp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:src="@drawable/arrow" />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/target_image"
+            android:src="@drawable/avator2"
+            android:layout_marginLeft="20dp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
