@@ -14,6 +14,8 @@ import com.firebase.client.snapshot.BooleanNode;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.uw.jyinouye.assassin.util.Ranking;
+
 /**
  * Application class that contains global state for login and auth stuff
  */
@@ -95,8 +97,10 @@ public class Assassin extends Application implements ValueEventListener {
                 mPlayer.setUserName(userName);
 
                 // adds to update global players here
-                ref.child("players").child(result.get("uid").toString()).child("email").setValue(mPlayer.getEmail());
-                ref.child("players").child(result.get("uid").toString()).child("userName").setValue(mPlayer.getUserName());
+                Ranking newRank = new Ranking(mPlayer.getEmail(), mPlayer.getUserName(), mPlayer.getKills());
+                ref.child("players").child(result.get("uid").toString()).setValue(newRank);
+//                ref.child("players").child(result.get("uid").toString()).child("userName").setValue(mPlayer.getUserName());
+//                ref.child("players").child(result.get("uid").toString()).child("kills").setValue(mPlayer.getKills());
 
                 mAuthenticateListener.onSignUpSuccess(mPlayer.getUid());
             }
@@ -160,7 +164,6 @@ public class Assassin extends Application implements ValueEventListener {
 
                     mPlayer.incKill();
                     ref.child("players").child(mPlayer.getUid()).child("kills").setValue(mPlayer.getKills());
-
                 }
 
                 @Override
