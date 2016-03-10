@@ -153,10 +153,11 @@ public class Assassin extends Application implements ValueEventListener {
         this.mPlayer.setAdmin(true);
     }
 
-    public void killPressed() {
+    public boolean killPressed() {
 //        final Location l = new Location("");
 //        l.setLatitude(mPlayer.getLatitude());
 //        l.setLongitude(mPlayer.getLongitude());
+        final boolean[] factors = {false};
         if(mPlayer.getTargetuid() != null) {
             final Firebase target = groupRef.child("players").child(mPlayer.getTargetuid());
             target.child("isDead").setValue(true);
@@ -165,7 +166,7 @@ public class Assassin extends Application implements ValueEventListener {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     mPlayer.setTargetuid(dataSnapshot.getValue(Player.class).getTargetuid());
                     Log.v(TAG, "New target: " + mPlayer.getTargetuid());
-
+                    factors[0] = true;
                     mPlayer.incKill();
                     ref.child("players").child(mPlayer.getUid()).child("kills").setValue(mPlayer.getKills());
                 }
@@ -176,6 +177,7 @@ public class Assassin extends Application implements ValueEventListener {
                 }
             });
         }
+        return factors[0];
     }
 
     public Firebase getRef() {

@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         mProfileFragment = new ProfileFragment();
-
         fragmentManager
         .beginTransaction()
                 .add(R.id.flContent, mMapFragment)
@@ -181,7 +180,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         killButton = (Button) findViewById(R.id.kill_button);
         killButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                assassin.killPressed();
+                boolean result = assassin.killPressed();
+                if(result) {
+                   // mLeaderboardFragment.refresh();
+                }
                 Log.v("hi", assassin.getPlayer().getKills()+"");
             }
         });
@@ -215,15 +217,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // The action bar home/up action should open or close the drawer.
-        switch (item.getItemId()) {
-            case R.id.admin_start_game:
-                startGame();
-                return true;
+        Log.v(TAG, "The player's admin status = " + player.getAdmin() );
+        if(player.getAdmin()) {
+            item.setEnabled(true);
+            switch (item.getItemId()) {
+                case R.id.admin_start_game:
+                    startGame();
+                    return true;
+            }
+            return super.onOptionsItemSelected(item);
+        } else {
+            item.setEnabled(false);
         }
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -292,6 +303,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void setProfileImage(View headerView) {
         int selectedAvator = assassin.getPlayer().getAvator();
         ImageView profile_image = (ImageView) headerView.findViewById(R.id.profile_image);
+        Log.v(TAG, "selectedAvator: " + selectedAvator);
+
+        //allows user to select their avatar
         if (selectedAvator == 1) {
             profile_image.setImageResource(R.drawable.avator1);
         } else if (selectedAvator == 2) {
